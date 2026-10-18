@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>System Sheet Screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/app.css">
+<link rel="stylesheet" href="../css/system.css">
+<link rel="stylesheet" href="screen.css">
+<script src="../js/theme.js"></script>
+</head>
+<body>
+<div class="canvas canvas--desktop"><div class="board">
+  <div class="board__head"><h1>Receipt system</h1><p>Solscan transaction page concept · Swiftbot</p></div>
+  <div id="sheet"></div>
+</div></div>
+<script src="../js/tx-data.js"></script>
+<script src="../js/model.js"></script>
+<script src="../js/system.js"></script>
+<script>SSSystem.render(document.getElementById('sheet'));</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipt Screens Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tokens.css">
+<script src="../js/theme.js"></script>
+<style>
+  body { padding: 48px 24px 80px; }
+  main { max-width: 880px; margin: 0 auto; }
+  h1 { margin: 0 0 8px; font: 600 32px/1.1 var(--font-sans); letter-spacing: -0.03em; }
+  p { margin: 0 0 32px; color: var(--ink-2); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { padding: 12px 12px 12px 0; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  td:first-child { color: var(--ink); font-weight: 500; }
+  td { color: var(--ink-2); }
+  a { color: var(--ink); text-underline-offset: 3px; text-decoration-color: var(--line-2); }
+  a:hover { text-decoration-color: var(--ink-2); }
+  .foot { margin-top: 32px; font-size: 13px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Screens</h1>
+  <p>Each page renders one screen at an exact size for screenshots: desktop 1440 × 900, mobile 390 × 844. Add <code>?theme=dark</code> to any of them for the dark theme. <a href="../index.html">Back to the case study</a></p>
+  <table>
+    <thead><tr><th>Screen</th><th>Shows</th><th>Desktop</th><th>Mobile</th></tr></thead>
+    <tbody>
+      <tr><td>1 Receipt</td><td>Status, what you gave and got, the cost</td><td><a href="receipt-desktop.html">1440</a> · <a href="receipt-desktop.html?theme=dark">dark</a></td><td><a href="receipt-mobile.html">390</a> · <a href="receipt-mobile.html?theme=dark">dark</a></td></tr>
+      <tr><td>2 Ledger</td><td>Where the money went: pool price, the decoded 1.25% pool fee, Jupiter and network fees, rent note (desktop opens both fee splits)</td><td><a href="ledger-desktop.html">1440</a> · <a href="ledger-desktop.html?theme=dark">dark</a></td><td><a href="ledger-mobile.html">390</a> · <a href="ledger-mobile.html?theme=dark">dark</a></td></tr>
+      <tr><td>3 Route, Simple</td><td>Wallet to Jupiter to Pump.fun AMM to wallet, amounts on the line, fee branch</td><td><a href="route-desktop.html">1440</a></td><td><a href="route-mobile.html">390</a></td></tr>
+      <tr><td>3 Route, Detailed</td><td>All 7 movements, balance sum, rent footnote</td><td><a href="route-detailed-desktop.html">1440</a></td><td><a href="route-detailed-mobile.html">390</a></td></tr>
+      <tr><td>4 Exact value</td><td>Exact amount popover (desktop) and bottom sheet (mobile)</td><td><a href="exact-desktop.html">1440</a></td><td><a href="exact-mobile.html">390</a></td></tr>
+      <tr><td>4 Plain words</td><td>Glossary popover in Technical details; mobile glossary sheet</td><td><a href="details-desktop.html">1440</a></td><td><a href="glossary-mobile.html">390</a></td></tr>
+      <tr><td>4 Technical details</td><td>Signature, block, signer, status, compute, version</td><td>in the rail on every desktop screen</td><td><a href="details-mobile.html">390</a></td></tr>
+      <tr><td>State: visitor</td><td>Someone else’s swap: “This wallet” instead of “you”</td><td><a href="visitor-desktop.html">1440</a></td><td><a href="visitor-mobile.html">390</a></td></tr>
+      <tr><td>State: failed</td><td>Example: not moved, still paid the network fee</td><td><a href="failed-desktop.html">1440</a></td><td><a href="failed-mobile.html">390</a></td></tr>
+      <tr><td>System</td><td>Type, colour, number rules, status, plain words, spacing</td><td><a href="system-desktop.html">1440</a> · <a href="system-desktop.html?theme=dark">dark</a></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="foot">Concept redesign by Swiftbot (github.com/swiftbotlab). Not affiliated with Solscan.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solscan Receipt Redesign</title>
+<meta name="description" content="Concept redesign of Solscan's transaction page as a receipt: outcome, a ledger that adds up to the lamport, the route in plain words, exact values on demand. Built on a real Jupiter swap.">
+<meta property="og:title" content="Solscan Receipt Redesign">
+<meta property="og:description" content="Your receipt first, the blockchain second. A concept redesign of Solscan's transaction page, built as working HTML on a real swap.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/system.css">
+<link rel="stylesheet" href="css/case.css">
+<script src="js/theme.js"></script>
+</head>
+<body class="cs">
+
+<header class="cs-bar">
+  <div class="cs-wrap">
+    <a class="cs-bar__brand" href="#top">Solscan, as a receipt<span>Concept</span></a>
+    <nav aria-label="Sections">
+      <a href="#f1">Receipt</a><a href="#f2">Ledger</a><a href="#f3">Route</a><a href="#f4">Exact values</a><a href="#system">System</a><a href="#writeup">Write-up</a>
+    </nav>
+    <div class="cs-bar__end">
+      <button type="button" class="cs-icon" data-cs-theme aria-label="Switch light or dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
+      <a class="cs-btn cs-btn--ink cs-btn--sm" href="prototype.html">Live prototype</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="cs-hero" aria-labelledby="hero-h">
+  <div class="cs-wrap">
+    <div class="cs-hero__grid">
+    <div class="cs-hero__text">
+    <p class="cs-eyebrow">Concept redesign · Solscan transaction page · October 2026</p>
+    <h1 class="cs-title" id="hero-h">Your receipt first, the blockchain second.</h1>
+    <p class="cs-summary">After a swap, Solscan answers “did it work, what did I get, what did it cost?” in the protocol’s words, with casino ads above the numbers and the fee a screen and a half down. This concept rebuilds the page as a receipt for the person who signed it, with every figure computed live from the real transaction.</p>
+    <div class="cs-cta">
+      <a class="cs-btn cs-btn--ink" href="prototype.html">Open the live prototype</a>
+      <a class="cs-btn" href="#writeup">Read the write-up</a>
+      <a class="cs-btn" href="screens/index.html">All screens</a>
+    </div>
+    </div>
+    <div class="cs-hero__art">
+      <figure class="cs-vs cs-vs--before">
+        <figcaption class="cs-vs__k">Today</figcaption>
+        <div class="cs-dev"><div class="cs-phone cs-shotphone"><div class="cs-phone__screen">
+          <div class="cs-phone__status" aria-hidden="true"><span>9:41</span><span class="cs-phone__icons"><svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.3A10.2 10.2 0 0 0 8 .4C5.2.4 2.7 1.5.8 3.3L2 4.6a8.4 8.4 0 0 1 6-2.4zm0 3.6c1.4 0 2.6.5 3.6 1.4l1.2-1.3a7 7 0 0 0-9.6 0l1.2 1.3c1-.9 2.2-1.4 3.6-1.4zm0 3.5c-.6 0-1.2.2-1.6.6L8 11.6l1.6-1.7c-.4-.4-1-.6-1.6-.6z" fill="currentColor"/></svg><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><rect x=".5" y=".5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="2" fill="currentColor"/><rect x="23.6" y="4" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".45"/></svg></span></div>
+          <div class="cs-phone__island" aria-hidden="true"></div>
+          <img class="cs-shotphone__img" src="img/solscan_tx_mobile_390.png" width="780" height="1688" alt="Solscan today, the first screen on a 390px phone: logo, price, search, the title Transaction Details, a three-line casino ad, four ad menus, tabs, then “Swap 24,785,431.639664 DICE for 0.000502417 WSOL”. Nothing on this screen says the swap succeeded.">
+          <div class="cs-phone__home" aria-hidden="true"></div>
+        </div></div></div>
+        <p class="cs-vs__note">solscan.io, first screen, Oct 18, 2026</p>
+      </figure>
+      <figure class="cs-vs cs-vs--after">
+        <figcaption class="cs-vs__k">Redesign</figcaption>
+        <div class="cs-frame cs-frame--hero" data-frame="phone" data-label="Live redesign, phone" data-cfg='{}'></div>
+      </figure>
+    </div>
+      <div class="cs-deltas" role="list" aria-label="Before and after, measured on this transaction">
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">Where the network fee appears</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">868px down</span><small>under the cookie banner; 1,263px on a phone</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v">First screen<small>inside the receipt, both sizes</small></div></div></div>
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">What “you got” says</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike"><span class="mono">0.000502417</span></span><small>WSOL, after the pool’s 1.25% fee, before the Jupiter and network fees</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v"><span class="mono">0.000494</span><small>SOL, the wallet’s real change</small></div></div></div>
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">Controls that change the view</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">12</span><small>tabs, modes, toggles, tool buttons</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v">1<small>Simple or Detailed</small></div></div></div>
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">Times the swap is stated, first screen</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">3</span><small>Summary, then two action rows</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v">1<small>the receipt</small></div></div></div>
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">Copy icons on the first desktop screen</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">15</span><small>51 in the page markup</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v">1<small>every value copies itself on demand</small></div></div></div>
+        <div class="cs-delta" role="listitem"><div class="cs-delta__k">Copying the 0.1% Jupiter fee gives</div><div class="cs-delta__row">
+          <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike"><span class="mono">0.06502</span></span><small>129,522× the real fee</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
+          <div class="cs-delta__v"><span class="mono">0.000000502</span><small>exact, as a plain number</small></div></div></div>
+      </div>
+    </div>
+    <dl class="cs-facts">
+      <div><dt>App</dt><dd>Solscan, transaction page</dd></div>
+      <div><dt>Features</dt><dd>Receipt · Ledger · Route · Exact values</dd></div>
+      <div><dt>Built as</dt><dd>Working HTML, desktop and mobile, light and dark</dd></div>
+      <div><dt>Data</dt><dd>Real Jupiter swap <span class="mono">3ae8jL…efShWURb</span>, slot 458450284</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ FEATURE 1 ============ -->
+<section class="cs-sec" id="f1" aria-labelledby="f1-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>01</b> Receipt header</p>
+    <h2 class="cs-h2" id="f1-h">Answer the three questions in the first five seconds.</h2>
+    <p class="cs-lede">The first screen speaks for the protocol, not the person. It never says “you”, states the swap three times, and leads with a number that isn’t what arrived.</p>
+
+    <div class="cs-label">Before <i>solscan.io today, captured on this transaction</i></div>
+    <div class="cs-before">
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-d-top.png" width="1424" height="844" alt="Current Solscan transaction page on desktop: Transaction Details title, sponsored casino line, Summary card with the swap, signature row, result, signer and the Transaction Actions list." loading="lazy">
+          <span class="cs-pin" data-n="1" style="left:16.6%;top:4%">1</span>
+          <span class="cs-pin" data-n="2" style="left:41.6%;top:13.2%">2</span>
+          <span class="cs-pin" data-n="2" style="left:65.2%;top:12.4%">2</span>
+          <span class="cs-pin" data-n="3" style="left:32.7%;top:23%">3</span>
+          <span class="cs-pin" data-n="4" style="left:2.4%;top:26.7%">4</span>
+          <span class="cs-pin" data-n="4" style="left:25.9%;top:64%">4</span>
+          <span class="cs-pin" data-n="4" style="left:25.9%;top:67.9%">4</span>
+          <span class="cs-pin" data-n="5" style="left:78.3%;top:35.7%">5</span>
+          <span class="cs-pin" data-n="5" style="left:25.6%;top:40.6%">5</span>
+          <span class="cs-pin" data-n="6" style="left:88.4%;top:25%">6</span>
+          <span class="cs-pin" data-n="6" style="left:89.3%;top:35.7%">6</span>
+          <span class="cs-pin" data-n="6" style="left:88.8%;top:58.5%">6</span>
+          <span class="cs-pin" data-n="7" style="left:54.6%;top:50.2%">7</span>
+          <span class="cs-pin" data-n="8" style="left:9.4%;top:50.2%">8</span>
+          <span class="cs-pin" data-n="8" style="left:48.7%;top:45.4%">8</span>
+        </div>
+        <figcaption>Desktop, 1440 × 900</figcaption>
+      </figure>
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/solscan_tx_mobile_390.png" width="780" height="1688" alt="Current Solscan transaction page on a 390px phone: logo, price, search, a three-line sponsored casino line, four ad menus, tabs, the summary wrapping around copy icons, and a cookie banner." loading="lazy">
+          <span class="cs-pin" data-n="2" style="left:94%;top:30.8%">2</span>
+          <span class="cs-pin" data-n="2" style="left:4%;top:41.1%">2</span>
+          <span class="cs-pin" data-n="3" style="left:95%;top:60.5%">3</span>
+          <span class="cs-pin" data-n="6" style="left:65%;top:53.3%">6</span>
+          <span class="cs-pin" data-n="6" style="left:69%;top:69.5%">6</span>
+          <span class="cs-pin" data-n="5" style="left:4%;top:73.2%">5</span>
+        </div>
+        <figcaption>Phone, 390 × 844</figcaption>
+      </figure>
+    </div>
+    <ol class="cs-issues">
+      <li data-n="1"><span class="cs-n">1</span><span><b>The title says what the page is, not what happened:</b> “Transaction Details · Jupiter: Swap”. The person who signed is called “Signer”.</span></li>
+      <li data-n="2"><span class="cs-n">2</span><span><b>Casino ads sit above the answer.</b> “1xBit: Deposit from the wallet you just checked”, plus four ad menus (Buy, Prediction, Play, Gaming).</span></li>
+      <li data-n="3"><span class="cs-n">3</span><span><b>The headline is after the pool fee but before the Jupiter and network fees:</b> 0.000502417 WSOL. The wallet’s real change was +0.000494183 SOL, after a 0.1% Jupiter fee and the network fee.</span></li>
+      <li data-n="4"><span class="cs-n">4</span><span><b>The same swap is stated three times</b> on one screen: the Summary, then Actions rows 1 and 2, with identical amounts.</span></li>
+      <li data-n="5"><span class="cs-n">5</span><span><b>The 88-character signature takes the first, widest row,</b> and the block number comes before the human time.</span></li>
+      <li data-n="6"><span class="cs-n">6</span><span><b>Green marks seven unrelated things:</b> a tab, three tool buttons, the status badge, the finality text and the cookie button. Nothing reads as the signal.</span></li>
+      <li data-n="7"><span class="cs-n">7</span><span><b>15 copy icons on this screen,</b> 51 in the page markup.</span></li>
+      <li data-n="8"><span class="cs-n">8</span><span><b>“Signer” means you, and “Finalized (MAX Confirmations)” means it’s permanent.</b> The page says neither.</span></li>
+    </ol>
+
+    <div class="cs-label">After <i>working UI, real data. Hover or tap any number.</i></div>
+    <div class="cs-toggle">Preview as
+      <span class="cs-seg" role="group" aria-label="Who is viewing"><button type="button" data-viewer="signer" aria-pressed="true">The wallet that signed</button><button type="button" data-viewer="visitor" aria-pressed="false">Someone else</button></span>
+    </div>
+    <div class="cs-frame" data-frame="desktop" data-viewer-toggle data-cfg='{}'></div>
+    <div class="cs-after__row">
+      <div class="cs-frame" data-frame="phone" data-viewer-toggle data-cfg='{}'></div>
+      <div class="cs-decisions">
+        <h3>Decisions</h3>
+        <ul>
+          <li><b>One card answers the three questions.</b> A status stamp (“Swap complete, final”), what you gave, what you got after every fee, and what it cost. That is the whole first screen.</li>
+          <li><b>Net, not gross.</b> “You got 0.000494 SOL” is the wallet’s real balance change. Today’s headline figure, 0.000502417, becomes the ledger’s Swap output line, where it is reconciled.</li>
+          <li><b>Plain SOL, not WSOL.</b> Jupiter wrapped and unwrapped it inside the same transaction, so the receipt says SOL and explains WSOL once, on tap.</li>
+          <li><b>“You” only when it’s true.</b> If the connected wallet signed, the copy says “You gave”. Explorers are public, so anyone else sees “This wallet gave”. Try the toggle above.</li>
+          <li><b>Rounded to read, exact on demand:</b> 24.79M and 0.000494 on screen, 24,785,431.639664 and 0.000494183 one hover or tap away.</li>
+          <li><b>Cost in dollars first,</b> because 0.000014595 SOL means nothing to a newcomer and “$0.0015” does. It counts all three fees: network, the 1.25% pool fee and the 0.1% Jupiter fee.</li>
+          <li><b>One green, two jobs:</b> the success stamp and the single primary action. On a phone, Copy link and Share sit in a sticky bar.</li>
+        </ul>
+        <p class="cs-screens">Standalone screens: <a href="screens/receipt-desktop.html">desktop 1440</a> · <a href="screens/receipt-mobile.html">mobile 390</a> · <a href="screens/receipt-desktop.html?theme=dark">dark</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE 2 ============ -->
+<section class="cs-sec" id="f2" aria-labelledby="f2-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>02</b> Where the money went</p>
+    <h2 class="cs-h2" id="f2-h">A ledger that adds up to the lamport.</h2>
+    <p class="cs-lede">Today the numbers never meet. The Jupiter fee is a “Transfer” row, the network fee is far below the fold, the pool’s 1.25% fee appears nowhere, and the real balance change lives in a separate tab.</p>
+
+    <div class="cs-label">Before</div>
+    <div class="cs-before">
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-d-fees.png" width="1424" height="420" alt="Current desktop page further down: the cookie banner covers the Fee row; below are Priority Fee, Transaction cost 94,738, compute units, version, lookup tables and block hash." loading="lazy">
+          <span class="cs-pin" data-n="1" style="left:16.3%;top:16%">1</span>
+          <span class="cs-pin" data-n="5" style="left:43%;top:25.7%">5</span>
+          <span class="cs-pin" data-n="2" style="left:32.8%;top:35.2%">2</span>
+        </div>
+        <figcaption>Desktop, 868px down the page</figcaption>
+      </figure>
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-m-fees.png" width="780" height="720" alt="Current page on a phone, 1,080 to 1,440px down: an empty Sponsored slot, then Fee, Priority Fee, Transaction cost 94,738 and compute units." loading="lazy">
+          <span class="cs-pin" data-n="1" style="left:22%;top:51%">1</span>
+          <span class="cs-pin" data-n="5" style="left:38%;top:62.2%">5</span>
+          <span class="cs-pin" data-n="2" style="left:44%;top:73.3%">2</span>
+        </div>
+        <figcaption>Phone, 1,263px down the page</figcaption>
+      </figure>
+    </div>
+    <ol class="cs-issues">
+      <li data-n="1"><span class="cs-n">1</span><span><b>The network fee is 868px down on desktop,</b> behind the cookie banner, and 1,263px down on a phone, under an empty Sponsored slot.</span></li>
+      <li data-n="2"><span class="cs-n">2</span><span><b>“Transaction cost: 94,738” is a block-space score</b> (87,640 compute units plus signature and account-lock costs), not a price, yet it is the row a newcomer reads as the price.</span></li>
+      <li data-n="3"><span class="cs-n">3</span><span><b>Nothing adds the pieces up.</b> The 0.1% fee appears only as “Transfer … for <code>0.0₆502</code> WSOL to Jupiter Aggregator Authority 11”, and the net change sits in a separate Balance Changes tab. The Pump.fun pool’s own 1.25% fee, 12.7× the Jupiter fee, is only in the program’s event log.</span></li>
+      <li data-n="4"><span class="cs-n">4</span><span><b>A hidden cost goes unmentioned.</b> The emptied DICE account still holds 0.00151 SOL of rent, about 3× what this swap was worth.</span></li>
+      <li data-n="5"><span class="cs-n">5</span><span><b>USD reprices a finalized transaction on every load.</b> The same 0.000002732 SOL priority fee reads $0.0002811 on one load and $0.0002835 on another.</span></li>
+    </ol>
+
+    <div class="cs-label">After</div>
+    <div class="cs-frame" data-frame="desktop" data-cfg='{"scrollTo":"ledger","poolOpen":true}'></div>
+    <div class="cs-after__row">
+      <div class="cs-frame" data-frame="phone" data-cfg='{"scrollTo":"ledger"}'></div>
+      <div class="cs-decisions">
+        <h3>Decisions</h3>
+        <ul>
+          <li><b>One signed column, read top to bottom like a bank statement.</b> No debit and credit columns to decode. Amounts stay ink with + and −. Selling isn’t a loss, so nothing turns red.</li>
+          <li><b>Pool price, pool fee, Jupiter fee and network fee</b> lead to the change in the wallet: +0.000494183 SOL. The 1.25% pool fee (0.02% to liquidity providers, 0.93% to Pump.fun, 0.30% to the coin creator) is decoded from the pool’s own SellEvent, and only shown when it matches the real transfer to the lamport. No explorer shows it today.</li>
+          <li><b>Checked, not asserted.</b> The total is compared with the wallet’s real balance before and after (10.714646341 → 10.715140524 SOL). The check mark only renders if they match to the lamport.</li>
+          <li><b>Exact here, on purpose.</b> This is where people verify, so the ledger shows all 9 decimals in tabular mono that lines up.</li>
+          <li><b>The network fee splits</b> into base (0.000005) and priority (0.000002732) behind one disclosure.</li>
+          <li><b>“Good to know” is conditional.</b> It shows only while the emptied DICE account is open and empty. Amber is reserved for it.</li>
+          <li><b>USD is labelled:</b> SOL at $103.85, its price when the swap happened. The figure stops drifting on a finalized transaction.</li>
+        </ul>
+        <p class="cs-screens">Standalone screens: <a href="screens/ledger-desktop.html">desktop 1440</a> · <a href="screens/ledger-mobile.html">mobile 390</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE 3 ============ -->
+<section class="cs-sec" id="f3" aria-labelledby="f3-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>03</b> How it happened</p>
+    <h2 class="cs-h2" id="f3-h">One route, one switch, nothing removed.</h2>
+    <p class="cs-lede">Four overlapping view systems reshape the same list, and they don’t even start the same way on a phone and a desktop.</p>
+
+    <div class="cs-label">Before</div>
+    <div class="cs-before">
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-d-actions.png" width="1400" height="180" alt="Current Transaction Actions block on desktop: a 6 Transfer(s) badge, Legacy Mode and Summary Mode tabs, Key Actions and Token Account toggles, a Tx Maps button and three rows." loading="lazy">
+          <span class="cs-pin" data-n="2" style="left:19%;top:13%">2</span>
+          <span class="cs-pin" data-n="1" style="left:44%;top:20%">1</span>
+          <span class="cs-pin" data-n="1" style="left:70.8%;top:20%">1</span>
+          <span class="cs-pin" data-n="1" style="left:97.2%;top:12%">1</span>
+          <span class="cs-pin" data-n="4" style="left:25.4%;top:45.6%">4</span>
+          <span class="cs-pin" data-n="4" style="left:25.4%;top:63.9%">4</span>
+          <span class="cs-pin" data-n="5" style="left:25.4%;top:82.2%">5</span>
+        </div>
+        <figcaption>Desktop: Key Actions off</figcaption>
+      </figure>
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-m-actions.png" width="780" height="500" alt="Current Transaction Actions block on a phone: 6 Transfer(s) badge with one row below, toggles in the opposite order with Key Actions switched on." loading="lazy">
+          <span class="cs-pin" data-n="2" style="left:68%;top:7%">2</span>
+          <span class="cs-pin" data-n="3" style="left:96.5%;top:40%">3</span>
+          <span class="cs-pin" data-n="1" style="left:64%;top:28.4%">1</span>
+        </div>
+        <figcaption>Phone: Key Actions on</figcaption>
+      </figure>
+    </div>
+    <ol class="cs-issues">
+      <li data-n="1"><span class="cs-n">1</span><span><b>12 controls change the view.</b> Two modes (Legacy, Summary) and two toggles (Key Actions, Token Account) reshape one list. Next to them sit Tx Maps, Inspect Tx, an explainer button, three tabs, API and a view menu.</span></li>
+      <li data-n="2"><span class="cs-n">2</span><span><b>“6 Transfer(s)” sits next to 3 rows on desktop and 1 row on a phone.</b></span></li>
+      <li data-n="3"><span class="cs-n">3</span><span><b>Defaults differ by breakpoint.</b> Key Actions is off on desktop and on by default on a phone, and the two toggles swap places.</span></li>
+      <li data-n="4"><span class="cs-n">4</span><span><b>Rows 1 and 2 repeat the Summary’s amounts.</b> Only the venue changes (Jupiter, then Pump.fun AMM), and nothing says that this is the route.</span></li>
+      <li data-n="5"><span class="cs-n">5</span><span><b>The fee is written as a transfer between strangers:</b> “Transfer from 2s5343…Chbo11 to Jupiter Aggregator Authority 11 for <code>0.0₆502</code> WSOL”.</span></li>
+      <li data-n="6"><span class="cs-n">6</span><span><b>Even the full list doesn’t add up.</b> Legacy Mode shows a 0.0013462 SOL deposit to Pump.fun leaving the wallet and never shows it coming back.</span></li>
+    </ol>
+
+    <div class="cs-label">After <i>desktop shows Simple, the phone shows Detailed. The switch works in both.</i></div>
+    <div class="cs-frame" data-frame="desktop" data-cfg='{"scrollTo":"route"}'></div>
+    <div class="cs-after__row">
+      <div class="cs-frame" data-frame="phone" data-cfg='{"scrollTo":"route","view":"detailed"}'></div>
+      <div class="cs-decisions">
+        <h3>Decisions</h3>
+        <ul>
+          <li><b>Simple tells the story as a route:</b> your wallet → Jupiter → Pump.fun AMM → your wallet, one plain sentence per stop, with the money on the line itself (24.79M DICE in, 0.000502 SOL out). The 0.1% Jupiter fee is a labelled branch with its amount, instead of a transfer row.</li>
+          <li><b>Detailed shows every movement in execution order,</b> each with a plain label, one signed amount, and from → to.</li>
+          <li><b>The count always matches the rows:</b> “7 of 7”. It includes the Pump.fun deposit return that today’s page never lists, marked “Missing today”.</li>
+          <li><b>The proof is on screen:</b> rows 1, 2, 5 and 7 plus the network fee sum to +0.000494183 SOL. Two temporary accounts were opened and closed, and their 0.00283464 SOL rent came back. That is different from the 0.00151 SOL still held in the empty DICE account.</li>
+          <li><b>One switch, same default everywhere.</b> Simple on every screen size. Your choice persists across transactions and lives in the URL (<code>?view=detailed</code>), so a shared link opens where it was shared.</li>
+          <li><b>On a phone,</b> the route becomes a vertical stepper and every row is at least 48px tall.</li>
+        </ul>
+        <p class="cs-screens">Standalone screens: <a href="screens/route-desktop.html">Simple, desktop</a> · <a href="screens/route-mobile.html">Simple, mobile</a> · <a href="screens/route-detailed-desktop.html">Detailed, desktop</a> · <a href="screens/route-detailed-mobile.html">Detailed, mobile</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE 4 ============ -->
+<section class="cs-sec" id="f4" aria-labelledby="f4-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>04</b> Exact values, plain words</p>
+    <h2 class="cs-h2" id="f4-h">Precise when you ask, plain when you don’t.</h2>
+    <p class="cs-lede">The page shows six-decimal amounts everywhere. Yet its one tiny amount uses a notation that copies wrong, and its labels need a “?” to explain themselves.</p>
+
+    <div class="cs-label">Before</div>
+    <div class="cs-before">
+      <div style="display:grid;gap:var(--s-5)">
+        <figure class="cs-shot cs-shot--zoom">
+          <div class="cs-shot__img">
+            <img src="img/before-d-subscript.png" width="1200" height="120" alt="Zoomed: the Jupiter fee shown as 0.0 with a subscript 6 then 502 WSOL." loading="lazy">
+            <span class="cs-pin" data-n="1" style="left:88%;top:50%">1</span>
+          </div>
+          <figcaption>Desktop, 4× zoom of Actions row 3</figcaption>
+        </figure>
+        <figure class="cs-shot">
+          <div class="cs-shot__img">
+            <img src="img/before-d-tech.png" width="1400" height="176" alt="Current desktop rows: Signature with the full 88-character value, Block and Timestamp, Result with SUCCESS and Finalized (MAX Confirmations), and Signer, each label with a question-mark icon." loading="lazy">
+            <span class="cs-pin" data-n="2" style="left:2.2%;top:30%">2</span>
+            <span class="cs-pin" data-n="3" style="left:78%;top:15.3%">3</span>
+            <span class="cs-pin" data-n="3" style="left:48%;top:61.9%">3</span>
+            <span class="cs-pin" data-n="3" style="left:8.6%;top:84.7%">3</span>
+          </div>
+          <figcaption>Desktop, detail rows</figcaption>
+        </figure>
+      </div>
+      <figure class="cs-shot">
+        <div class="cs-shot__img">
+          <img src="img/before-m-tech.png" width="780" height="820" alt="Current page on a phone, about 1,440px down: lookup table accounts, recent block hash, personal label, instruction details with list and tree switches, and a compute units distribution chart." loading="lazy">
+          <span class="cs-pin" data-n="4" style="left:56.5%;top:6%">4</span>
+          <span class="cs-pin" data-n="4" style="left:40%;top:61.3%">4</span>
+          <span class="cs-pin" data-n="4" style="left:62%;top:77.3%">4</span>
+        </div>
+        <figcaption>Phone, 1,440px down the page</figcaption>
+      </figure>
+    </div>
+    <ol class="cs-issues">
+      <li data-n="1"><span class="cs-n">1</span><span><b>A copy bug you can check in 30 seconds.</b> “0.0₆502” is a subscript in the markup (<code>0.0&lt;sub&gt;6&lt;/sub&gt;502</code>). Select and copy it and you get <code>0.06502</code>, 129,522 times the real 0.000000502. Screen readers get the same text.</span></li>
+      <li data-n="2"><span class="cs-n">2</span><span><b>A “?” on every label,</b> 22 in the page markup. The labels themselves need explaining.</span></li>
+      <li data-n="3"><span class="cs-n">3</span><span><b>Shown, never explained:</b> the 88-character signature, “Finalized (MAX Confirmations)” and “Signer”.</span></li>
+      <li data-n="4"><span class="cs-n">4</span><span><b>On a phone, expert data gets the same weight as the fee:</b> lookup tables, block hash, a compute-unit chart and instruction lists.</span></li>
+    </ol>
+
+    <div class="cs-label">After <i>the desktop frame opens the exact value of “You got”, the phone opens “You gave” as a sheet</i></div>
+    <div class="cs-frame" data-frame="desktop" data-cfg='{"demo":["got","pop"]}'></div>
+    <div class="cs-after__row">
+      <div class="cs-frame" data-frame="phone" data-cfg='{"demo":["gave","sheet"]}'></div>
+      <div class="cs-decisions">
+        <h3>Decisions</h3>
+        <ul>
+          <li><b>Every rounded or formatted value is a button.</b> Hover or click on desktop; tap or long-press on a phone. It shows the exact value, base units and decimals, and a Copy exact action.</li>
+          <li><b>Copy gives a plain number</b> (no thousands separators, ASCII minus), so it pastes cleanly into a sheet or a wallet. Selecting text and pressing copy gives exact values too.</li>
+          <li><b>Screen readers hear the exact amount:</b> “24.79M, exactly 24,785,431.639664”.</li>
+          <li><b>No subscript zeros, anywhere.</b> Small amounts use three significant figures (0.000494) and costs lead with dollars ($0.0015).</li>
+          <li><b>Terms are explained once, where they are used.</b> Final, WSOL, signer, rent deposit, priority fee, compute units and lookup tables each get a dotted underline and a one-sentence definition.</li>
+          <li><b>Technical details stay intact.</b> Signature, block, signer, status, compute, version, lookup tables, blockhash, and Raw JSON, Inspect, Transaction map and API as text links. It is a sticky rail on wide screens and one collapsed section on a phone.</li>
+          <li><b>Ads stay, because they pay for a free explorer,</b> in one labelled box after the answer, never between the user and their numbers.</li>
+        </ul>
+        <p class="cs-try"><b>Try it:</b> select the “0.000494” above, copy, and paste anywhere. You get <code>0.000494183</code>.</p>
+        <p class="cs-screens">Standalone screens: <a href="screens/exact-desktop.html">exact value, desktop</a> · <a href="screens/exact-mobile.html">exact value, mobile</a> · <a href="screens/details-desktop.html">plain words, desktop</a> · <a href="screens/details-mobile.html">technical, mobile</a> · <a href="screens/glossary-mobile.html">plain words, mobile</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATES ============ -->
+<section class="cs-sec" id="states" aria-labelledby="st-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>05</b> States</p>
+    <h2 class="cs-h2" id="st-h">Same layout for every viewer and every outcome.</h2>
+    <p class="cs-lede">The scariest case for a newcomer is a failed swap. The receipt reads it from the same fields Solscan already has (<code>meta.err</code> and <code>fee</code>): your DICE was not moved, and you still paid the network fee.</p>
+    <div class="cs-states">
+      <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"viewer":"signer"}'></div><figcaption><b>Your swap</b>The connected wallet signed it</figcaption></figure>
+      <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"viewer":"visitor"}'></div><figcaption><b>Someone else’s swap</b>Same facts, “This wallet” instead of “you”</figcaption></figure>
+      <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"status":"failed"}'></div><figcaption><b>Didn’t go through</b>Example state, not a real failed transaction</figcaption></figure>
+    </div>
+    <p class="cs-screens" style="justify-content:center">Standalone screens: <a href="screens/failed-desktop.html">failed, desktop</a> · <a href="screens/failed-mobile.html">failed, mobile</a> · <a href="prototype.html?as=visitor">visitor view, live</a></p>
+  </div>
+</section>
+
+<!-- ============ SYSTEM ============ -->
+<section class="cs-sec" id="system" aria-labelledby="sy-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>06</b> System</p>
+    <h2 class="cs-h2" id="sy-h">The rules behind the screens.</h2>
+    <p class="cs-lede">One accent with a strict meaning, one spacing scale, tabular figures, and number rules that decide how every value is shown. Every text pair passes AA. The lowest is Ink 3 on Surface 3 at 4.6:1 (5.2:1 on paper). Green is only ever a fill behind dark text (7.2:1).</p>
+    <div class="cs-system" id="system-sheet"></div>
+    <p class="cs-screens">Standalone board: <a href="screens/system-desktop.html">system, 1440 × 900</a></p>
+  </div>
+</section>
+
+<!-- ============ WRITE-UP ============ -->
+<section class="cs-sec" id="writeup" aria-labelledby="wu-h">
+  <div class="cs-wrap">
+    <p class="cs-kicker"><b>07</b> Write-up</p>
+    <h2 class="cs-h2" id="wu-h">What was wrong, what changed, and why.</h2>
+    <div class="cs-prose">
+      <div>
+        <h3>Problems found</h3>
+        <ul>
+          <li><b>No plain answer</b> to “did it work, what did I get, what did it cost?”. The page speaks for the protocol and calls you “Signer”.</li>
+          <li><b>The headline isn’t the outcome.</b> It says 0.000502417 WSOL, after the pool’s fee but before the others. The wallet changed by +0.000494183 SOL after a 0.1% Jupiter fee and the network fee.</li>
+          <li><b>Fees are hard to find.</b> The fee is 868px down on desktop, under a cookie banner, and 1,263px down on a phone. “Transaction cost: 94,738” is a block-space score (87,640 compute units plus signature and account-lock costs), not a price.</li>
+          <li><b>Repetition and noise.</b> The swap is stated three times on the first screen, there are 15 copy icons and 12 view controls, and green has seven jobs.</li>
+          <li><b>Numbers that mislead.</b> “0.0₆502” copies as 0.06502 (129,522× off), and USD reprices a finalized transaction on every load.</li>
+          <li><b>Hidden costs.</b> The Pump.fun pool kept a 1.25% fee (0.000006361 SOL, 12.7× the Jupiter fee) that the page never shows. In all, the swap paid about $0.0015 in three fees. The emptied DICE account still holds 0.00151 SOL of rent, about 3× the swap’s value, and nothing says so.</li>
+          <li><b>Inconsistent and incomplete.</b> Defaults differ between phone and desktop, and the transfer list never shows a 0.0013462 SOL deposit coming back.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Decisions and why</h3>
+        <ul>
+          <li><b>A receipt metaphor</b> because the reader just paid for something. Outcome, then where the money went, then how, then technical details.</li>
+          <li><b>Net amounts in “you” language,</b> used only when the connected wallet signed. Anyone else reads “This wallet”.</li>
+          <li><b>One number per fact,</b> rounded for reading, with the exact value one hover or tap away. Copy always gives the exact plain number.</li>
+          <li><b>A ledger checked against real balances,</b> so the page proves its own arithmetic.</li>
+          <li><b>Colour with a strict meaning.</b> Green is success and the one primary action, amber is good to know, red is failure. Amounts stay ink.</li>
+          <li><b>Restraint as the identity:</b> one perforated hairline and a stamp-style status, hairlines instead of nested cards, and a single 8px scale.</li>
+          <li><b>Ads kept but demoted:</b> a labelled box after the answer, since the explorer is free because of them.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Kept for power users</h3>
+        <ul>
+          <li><b>Detailed view:</b> all 7 movements in execution order, with addresses, the balance sum and program steps with compute units. It also has the raw transaction JSON.</li>
+          <li><b>Technical details:</b> full signature with copy, block, signer, finality, compute limit and priority price. It also has version, both lookup tables, blockhash, and Raw JSON, Inspect, Transaction map and API links.</li>
+          <li><b>Depth that sticks.</b> Detailed persists across transactions and is in the URL, so you choose once.</li>
+          <li><b>Exact values everywhere,</b> including base units and decimals.</li>
+        </ul>
+        <p>Nothing is removed. It is ordered by who needs it first.</p>
+      </div>
+      <div>
+        <h3>Accessibility</h3>
+        <ul>
+          <li><b>WCAG AA contrast for every text pair</b> in both themes. The smallest text is Ink 3: 5.2:1 on light paper, 6.1:1 on dark.</li>
+          <li><b>Status is never colour alone.</b> Every state has an icon, a word and a colour.</li>
+          <li><b>Exact values in accessible names,</b> so no screen reader hears 0.06502.</li>
+          <li><b>All controls are real buttons</b> with visible focus rings. The Simple/Detailed switch is a radio group with arrow keys. Escape closes popovers and sheets and returns focus.</li>
+          <li><b>Phone controls are at least 44px tall</b> and ledger rows 48px. Sheets replace hover. Motion respects <code>prefers-reduced-motion</code>, and the stamp never rotates.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="cs-foot">
+  <div class="cs-wrap">
+    <p><b>Concept redesign by Swiftbot (<a href="https://github.com/swiftbotlab">github.com/swiftbotlab</a>). Not affiliated with Solscan.</b></p>
+    <p>Before screenshots were captured from solscan.io on October 18, 2026. Transaction data was fetched from public Solana RPC (getTransaction, jsonParsed): signature 3ae8jL6Y6DxM1PiZdiQH4J4dXVaGs3R3JLtCweWT4iSYyY9gxQWSwZx21KLQfMrknt5fi58HUufF3YW1efShWURb. USD figures use SOL at $103.85, the price Solscan showed 11 seconds after the swap. The failed state is an illustration built on the same data shape.</p>
+  </div>
+</footer>
+
+<noscript><p style="padding:24px;text-align:center">The redesigned screens are live HTML rendered with JavaScript. Static versions are in <a href="screens/index.html">screens/</a>.</p></noscript>
+<script src="js/tx-data.js"></script>
+<script src="js/model.js"></script>
+<script src="js/app.js"></script>
+<script src="js/system.js"></script>
+<script src="js/case.js"></script>
+</body>
+</html>
