@@ -275,10 +275,10 @@
       <div class="cs-decisions">
         <h3>Decisions</h3>
         <ul>
-          <li><b>Simple tells the story as a route:</b> your wallet → Jupiter → Pump.fun AMM → your wallet, one plain sentence per stop, with the money on the line itself (24.79M DICE, wallet → pool; 0.000502 SOL back). Jupiter picked the route but never held the DICE, and the route says so. The 0.1% Jupiter fee is a labelled branch with its amount, instead of a transfer row.</li>
+          <li><b>Simple tells the story as a route:</b> your wallet → Jupiter → Pump.fun AMM → your wallet, one plain sentence per stop, with the money on the line itself (24.79M DICE, wallet → pool; 0.000502 SOL back). Jupiter picked the route but never held the DICE, and the route says so. The 0.1% Jupiter fee is a labelled branch with its amount, instead of a transfer row. One plain line under the route reads Jupiter’s own quote: the pool paid out 0.000501915 SOL after Jupiter’s fee, exactly the quoted amount, with up to 1% less allowed (slippage).</li>
           <li><b>Detailed shows every movement in execution order,</b> each with a plain label, one signed amount, and from → to.</li>
           <li><b>The count always matches the rows:</b> “7 of 7”. It includes the Pump.fun deposit return that today’s page never lists, marked “Missing today”.</li>
-          <li><b>The proof is on screen:</b> rows 1, 2, 5 and 7 plus the network fee sum to +0.000494183 SOL. Two temporary accounts were opened and closed, and their 0.00283464 SOL rent came back. That is different from the 0.00151 SOL still held in the empty DICE account.</li>
+          <li><b>The proof is on screen:</b> rows 1, 2, 5 and 7 plus the network fee sum to +0.000494183 SOL. Two temporary accounts were opened and closed, and their 0.00283464 SOL rent came back: each deposit is tagged with its return (“Back in row 7”, “Back in row 5”). That is different from the 0.00151 SOL still held in the empty DICE account.</li>
           <li><b>One switch, same default everywhere.</b> Simple on every screen size. Your choice persists across transactions and lives in the URL (<code>?view=detailed</code>), so a shared link opens where it was shared.</li>
           <li><b>On a phone,</b> the route becomes a vertical stepper and every row is at least 48px tall.</li>
         </ul>

@@ -283,6 +283,26 @@
   var reconciles = netCheck === signerDelta;
   var aggFeePct = swapOut ? Math.round(aggFee / swapOut * 1000) / 10 : 0;
 
+  /* Jupiter's own quote, decoded from the route_v2 instruction (Anchor discriminator bb64facc31c4af14).
+     Arguments after the discriminator: in_amount u64 @8, quoted_out_amount u64 @16, slippage_bps u16 @24,
+     platform_fee_bps u16 @26. Used only when it agrees with the real transfers: in_amount is exactly what the
+     wallet sold, and platform_fee_bps of the pool's payout (rounded down) is exactly the Jupiter fee. */
+  var JUP_PROGRAM = 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4';
+  var ROUTE_V2 = [0xbb, 0x64, 0xfa, 0xcc, 0x31, 0xc4, 0xaf, 0x14];
+  var quote = null;
+  (function decodeRouteV2() {
+    var ixs = msg.instructions.filter(function (ix) { return ix.programId === JUP_PROGRAM && typeof ix.data === 'string' && ix.data.length <= 1024; });
+    if (ixs.length !== 1) return;
+    var b = base58Decode(ixs[0].data);
+    if (b.length < 30) return;
+    for (var d = 0; d < 8; d++) if (b[d] !== ROUTE_V2[d]) return;
+    var q = { inAmount: readLE(b, 8, 8), quotedOut: readLE(b, 16, 8), slippageBps: readLE(b, 24, 2), platformFeeBps: readLE(b, 26, 2) };
+    var soldRaw = sold ? -sold.delta : null;
+    var sane = soldRaw !== null && q.inAmount === soldRaw && q.quotedOut > 0 && q.slippageBps > 0 && q.slippageBps < 10000 &&
+      Math.floor(swapOut * q.platformFeeBps / 10000) === aggFee;
+    if (sane) quote = q;
+  })();
+
   /* Pump.fun AMM fee, decoded from the pool's own SellEvent ("Program data:" log after "Instruction: SellV2",
      Anchor discriminator 3e2f370aa503dc2a). u64 little-endian fields at byte offsets (discriminator included):
      64 quote_amount_out (gross), 72 lp_fee_bps, 80 lp_fee, 88 protocol_fee_bps, 96 protocol_fee,
@@ -388,6 +408,8 @@
     poolGross: pool ? pool.gross : null,
     poolFeePct: pool ? pool.bps / 100 : null,
     cost: fee + aggFee + poolFee,
+    /* Jupiter's quote from route_v2: null when it is missing or does not agree with the real transfers */
+    quote: quote,
     reconciles: reconciles,
     sold: sold,
     soldToken: sold ? (TOKENS[sold.mint] || { symbol: short(sold.mint) }) : null,

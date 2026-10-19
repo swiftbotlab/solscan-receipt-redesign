@@ -338,8 +338,15 @@
             aria: 'Jupiter fee, minus ' + F.units(T.aggFee, 9, { trim: true }) + ' SOL, ' + pct(T.aggFeePct) + ' of the output' }) + '</li>';
       }
     });
+    /* the quote in plain words, from Jupiter's own route_v2 arguments (model.js). Not "you got exactly the quote":
+       the receipt's headline figure is after the network fee, this one is before it. */
+    var Q = T.quote;
+    var quoteLine = ok && Q ? '<p class="ss-route__foot ss-route__quote">The pool paid out ' + amt(ctx, T.arrived, 9, 'SOL', null, { what: 'Pool payout after Jupiter’s fee' }) +
+      ' SOL after Jupiter’s fee, ' + (T.arrived === Q.quotedOut ? 'exactly the quoted amount.'
+        : (T.arrived > Q.quotedOut ? 'more than the quoted ' : 'against a quote of ') + esc(F.units(Q.quotedOut, 9, { trim: true })) + ' SOL.') +
+      ' Up to ' + pct(Q.slippageBps / 100) + ' less was allowed <span class="ss-nw">(' + term(ctx, 'slippage', 'slippage', null) + ').</span></p>' : '';
     var simple = '<ol class="ss-route' + (ok ? ' ss-route--flow' : '') + '" aria-label="Route of the swap">' + html + '</ol>' +
-      (ok ? '' : '<p class="ss-route__foot">Nothing moved except the network fee.</p>');
+      (ok ? quoteLine : '<p class="ss-route__foot">Nothing moved except the network fee.</p>');
     var seg = '<div class="ss-seg" role="radiogroup" aria-label="Level of detail">' +
       '<button type="button" role="radio" data-act="view" data-v="simple" aria-checked="' + (view === 'simple') + '" tabindex="' + (view === 'simple' ? 0 : -1) + '">Simple</button>' +
       '<button type="button" role="radio" data-act="view" data-v="detailed" aria-checked="' + (view === 'detailed') + '" tabindex="' + (view === 'detailed' ? 0 : -1) + '">Detailed</button></div>';
@@ -371,6 +378,7 @@
       owner === T.signer ? null : { owner: owner, ownerName: ownerName });
   }
 
+  var NUM_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
   function detail(ctx) {
     var ok = ctx.ok();
     if (!ok) {
@@ -380,11 +388,23 @@
     var arrow = I.right(12) + '<span class="vh"> to </span>';
     var h3 = ctx.h(3);
     var mv = T.movements;
+    /* pair each rent deposit with the later row that returns it (the same account, closed or refunded) */
+    var backIn = {};
+    mv.forEach(function (m) {
+      if (m.kind !== 'deposit') return;
+      for (var i = 0; i < mv.length; i++) {
+        var r = mv[i];
+        if (r.n > m.n && (r.kind === 'refund' || r.kind === 'close') && r.from === m.to) { backIn[m.n] = r.n; return; }
+      }
+    });
+    var deposits = mv.filter(function (m) { return m.kind === 'deposit'; });
+    var allBack = deposits.length > 0 && deposits.every(function (m) { return backIn[m.n]; });
     var items = mv.map(function (m) {
       var what, sub, amount, from, to;
       if (m.kind === 'deposit') {
         var isWsol = m.to === T.tempAccounts[0];
-        what = term(ctx, 'rent', 'Rent deposit', null) + ': ' + (isWsol ? 'temporary SOL account' : 'Pump.fun tracking account');
+        what = term(ctx, 'rent', 'Rent deposit', null) + ': ' + (isWsol ? 'temporary SOL account' : 'Pump.fun tracking account') +
+          (backIn[m.n] ? '<span class="ss-tag ss-tag--pair">Back in row ' + backIn[m.n] + '</span>' : '');
         sub = isWsol ? 'Opened to receive the swap output' : 'Pump.fun opens it to record trading volume';
         amount = amt(ctx, -m.raw, 9, 'SOL', null, { sign: true }) + '<span class="ss-unit">SOL</span>';
       } else if (m.kind === 'refund') {
@@ -431,7 +451,9 @@
     return '<div class="ss-detail">' +
       '<div class="ss-subhead"><' + h3 + ' class="ss-subhead__t">Every movement</' + h3 + '><span class="ss-count" aria-label="' + mv.length + ' of ' + mv.length + ' movements shown">' + mv.length + ' of ' + mv.length + '</span></div>' +
       '<ol class="ss-moves">' + items + '</ol>' +
-      '<div class="ss-sum">Rows ' + rows.slice(0, -1).join(', ') + ' and ' + rows[rows.length - 1] + ', plus the network fee, are the ones that change ' + ctx.you('your', 'this') + ' SOL balance:' +
+      '<div class="ss-sum">' + (allBack ? '<p class="ss-sum__lead">' + NUM_WORDS[Math.min(deposits.length, NUM_WORDS.length - 1)] + (deposits.length === 1 ? ' deposit' : ' deposits') +
+        ' went out and came back in this transaction. Net change: <b class="ss-sum__net">' + (T.signerDelta < 0 ? '−' : '+') + F.units(Math.abs(T.signerDelta), 9, { trim: true }) + ' SOL</b>.</p>' : '') +
+        'Rows ' + rows.slice(0, -1).join(', ') + ' and ' + rows[rows.length - 1] + ', plus the network fee, are the ones that change ' + ctx.you('your', 'this') + ' SOL balance:' +
         '<span class="mono">' + sum + (T.movementsReconcile ? I.check(14) : '') + '</span></div>' +
       '<p class="ss-foot-note">' + T.tempAccounts.length + ' temporary accounts were opened and closed; their ' + F.units(T.tempRentOpened, 9, { trim: true }) +
         ' SOL of rent came back in full. ' + (rentHeld ? 'The ' + solRound(rentHeld.lamports) + ' SOL in the empty ' + esc(SOLD_SYM) + ' account is different: it is still held.' : '') + '</p>' +

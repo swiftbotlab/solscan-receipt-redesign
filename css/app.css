@@ -326,6 +326,10 @@
 .ss-moves .is-fee .ss-moves__n { color: var(--ink-3); }
 .ss-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 6px; margin-left: 6px; border-radius: 5px; border: 1px solid var(--line-2); font: 500 var(--t-12)/1 var(--font-sans); letter-spacing: .02em; color: var(--ink-3); vertical-align: 2px; }
 .ss-sum { margin-top: var(--s-3); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--surface-2); font-size: var(--t-13); color: var(--ink-2); }
+.ss-sum__lead { margin: 0 0 var(--s-2) !important; color: var(--ink); font-size: var(--t-14); }
+.ss-sum__net { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.ss-nw { white-space: nowrap; }
+.ss-route__quote .ss-x { color: var(--ink); font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--t-13); }
 .ss-sum .mono { display: block; margin-top: 4px; color: var(--ink); font-size: var(--t-13); overflow-wrap: anywhere; }
 .ss-sum svg { display: inline-block; vertical-align: -3px; color: var(--accent-ink); margin-left: 4px; }
 .ss-foot-note { margin-top: var(--s-3) !important; font-size: var(--t-13); color: var(--ink-3); }
