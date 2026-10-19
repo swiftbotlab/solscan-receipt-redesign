@@ -25,6 +25,10 @@ Jupiter swap (DICE → SOL through Pump.fun AMM), signature `3ae8jL…efShWURb`,
 
 **[tx.html](https://swiftbotlab.github.io/solscan-receipt-redesign/tx.html)** turns any Solana mainnet signature (or an explorer URL) into the same receipt: what you gave, what you got, what it cost, where every lamport went, and how it happened. Every figure is derived from the transaction's pre/post balances; when a transaction can't be explained with certainty, the page reduces to what it can prove (balance changes, fee, programs) instead of guessing. The model behind it (`js/model-any.js`, a pure function) was checked against 1,229 real mainnet transactions: Jupiter multi-hop swaps, Pump.fun, Raydium, Orca, Meteora, plain SOL/SPL/Token-2022 transfers and failed transactions. It runs in the browser against public RPC under a strict Content-Security-Policy; nothing you paste is uploaded.
 
+## API (pay per call)
+
+For programs and agents: `GET https://x402-receipt.swiftbotlab.workers.dev/receipt?sig=<signature>` returns the same receipt as JSON. It is an [x402](https://www.x402.org) endpoint: the first response is a `402` with the payment terms (USDC on Base, $0.02 per call, settled by the PayAI facilitator), and a paying client gets the receipt plus a settlement receipt header. Docs and an OpenAPI description are at the root URL; failed lookups are never charged.
+
 ## Use it in your product
 
 The engine is MIT-licensed and framework-free. It fits a wallet's transaction detail view, a trading bot's post-trade message, an explorer's "simple view" or a support desk's internal tool, and it can run against your own RPC. For integration, styling to your design system, or a hosted endpoint, write to **lemuriva57+swiftbot@gmail.com** or Telegram **@swiftbotlabs** — fixed price in USDC/USDT, working demo before you pay.
