@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src https://solana-rpc.publicnode.com https://rpc.solanatracker.io https://lite-api.jup.ag; base-uri 'none'; form-action 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'">
+<meta name="referrer" content="no-referrer">
+<title>Solana Tx Receipt</title>
+<meta name="description" content="Paste any Solana transaction signature or explorer link and read it as a receipt: what was given, what came back, the full cost and where every lamport went. Concept by Swiftbot, not affiliated with Solscan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/system.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/tx.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+<div id="app" class="ss"></div>
+<noscript><p class="tx-noscript">This page reads a Solana transaction in your browser, so it needs JavaScript. The case study at <a href="index.html">index.html</a> explains the design.</p></noscript>
+<script src="js/model-any.js"></script>
+<script src="js/tx-app.js"></script>
+</body>
+</html>
