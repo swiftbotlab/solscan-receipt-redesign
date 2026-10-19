@@ -179,6 +179,45 @@
       SS.store('ss:theme', next);
     });
 
+    /* hero walkthrough: muted, looping and inline. Under reduced motion it stays on its poster with controls,
+       so it only plays when asked; it also pauses while off screen. */
+    var walk = document.querySelector('.cs-walk');
+    if (walk) {
+      var phone = walk.closest('.cs-walkphone');
+      var darkFrom = phone ? Number(phone.getAttribute('data-dark-from')) : 0;
+      var rm = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+      var onScreen = true;
+      var still = function () { return !!(rm && rm.matches); };
+      var play = function () { if (!still() && onScreen) { var p = walk.play(); if (p && p.catch) p.catch(function () { walk.controls = true; }); } };
+      var apply = function () {
+        if (still()) { walk.pause(); walk.controls = true; walk.removeAttribute('tabindex'); }
+        else { walk.controls = false; walk.muted = true; walk.preload = 'auto'; walk.tabIndex = 0; play(); }
+      };
+      var sync = function () { if (phone && darkFrom > 0) phone.classList.toggle('is-dark', walk.currentTime >= darkFrom); };
+      walk.addEventListener('timeupdate', sync);
+      walk.addEventListener('seeked', sync);
+      if ('requestVideoFrameCallback' in walk) {
+        var tick = function () { sync(); walk.requestVideoFrameCallback(tick); };
+        walk.requestVideoFrameCallback(tick);
+      }
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          onScreen = es[0].isIntersecting;
+          if (onScreen) play(); else if (!walk.paused && !still()) walk.pause();
+        }).observe(walk);
+      }
+      /* moving content needs a way to stop it: a click, tap, Enter or Space on the clip pauses or resumes it */
+      var toggle = function (e) {
+        if (walk.controls) return;
+        if (e) e.preventDefault();
+        if (walk.paused) { var p = walk.play(); if (p && p.catch) p.catch(function () {}); } else walk.pause();
+      };
+      walk.addEventListener('click', toggle);
+      walk.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') toggle(e); });
+      if (rm) { if (rm.addEventListener) rm.addEventListener('change', apply); else if (rm.addListener) rm.addListener(apply); }
+      apply();
+    }
+
     var sys = document.getElementById('system-sheet');
     if (sys && window.SSSystem) window.SSSystem.render(sys);
 

@@ -71,6 +71,12 @@
 .cs-shotphone .cs-phone__status { background: #fff; color: #15171A; }
 .cs-shotphone .cs-phone__island { z-index: 31; }
 .cs-shotphone .cs-phone__home { background: #15171A; }
+/* hero walkthrough video: the status bar and home indicator follow the clip into dark mode (case.js sets is-dark) */
+.cs-walk { background: #FAFAF8; }
+.cs-walkphone .cs-phone__status { background: #FAFAF8; transition: background .2s, color .2s; }
+.cs-walkphone.is-dark .cs-phone__status { background: #121315; color: #F2F2F0; }
+.cs-walkphone.is-dark .cs-phone__home { background: #F2F2F0; }
+.cs-vs__note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .cs-eyebrow { margin: 0 0 var(--s-4); font: 500 var(--t-13)/1.4 var(--font-mono); letter-spacing: 0; color: var(--ink-3); }
 .cs-title { margin: 0; max-width: 16ch; font: 600 clamp(38px, 4.3vw, 60px)/1.02 var(--font-sans); letter-spacing: -0.045em; text-wrap: balance; }
 .cs-summary { max-width: 60ch; margin: var(--s-5) 0 0; font-size: clamp(16px, 1.25vw, 18px); line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
