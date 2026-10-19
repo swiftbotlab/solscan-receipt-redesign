@@ -21,10 +21,18 @@ Jupiter swap (DICE → SOL through Pump.fun AMM), signature `3ae8jL…efShWURb`,
 3. **How it happened** — the route in plain words (wallet → Jupiter → Pump.fun AMM → wallet). One Simple/Detailed switch replaces 12 view controls.
 4. **Exact values, plain words** — every rounded number opens its exact value and copies it correctly; jargon gets one-sentence definitions where it appears.
 
+## Try it on any transaction
+
+**[tx.html](https://swiftbotlab.github.io/solscan-receipt-redesign/tx.html)** turns any Solana mainnet signature (or an explorer URL) into the same receipt: what you gave, what you got, what it cost, where every lamport went, and how it happened. Every figure is derived from the transaction's pre/post balances; when a transaction can't be explained with certainty, the page reduces to what it can prove (balance changes, fee, programs) instead of guessing. The model behind it (`js/model-any.js`, a pure function) was checked against 1,229 real mainnet transactions: Jupiter multi-hop swaps, Pump.fun, Raydium, Orca, Meteora, plain SOL/SPL/Token-2022 transfers and failed transactions. It runs in the browser against public RPC under a strict Content-Security-Policy; nothing you paste is uploaded.
+
+## Use it in your product
+
+The engine is MIT-licensed and framework-free. It fits a wallet's transaction detail view, a trading bot's post-trade message, an explorer's "simple view" or a support desk's internal tool, and it can run against your own RPC. For integration, styling to your design system, or a hosted endpoint, write to **lemuriva57+swiftbot@gmail.com** or Telegram **@swiftbotlabs** — fixed price in USDC/USDT, working demo before you pay.
+
 ## How it's built
 
 Static site, no backend. The redesigned screens are rendered with vanilla JavaScript from one
-bundled, public transaction (`js/tx-data.js`); the page makes no RPC calls and needs no keys. The
+bundled, public transaction (`js/tx-data.js`); the page makes no RPC calls (tx.html does: it reads public Solana RPC and Jupiter token data, nothing else) and needs no keys. The
 "before" images are real screenshots of solscan.io captured on October 18, 2026. See
 [`WRITEUP.md`](WRITEUP.md) for the full design write-up and [`SECURITY.md`](SECURITY.md) for notes.
 
