@@ -70,7 +70,7 @@
           <div class="cs-delta__v"><span class="mono">0.000494</span><small>SOL, the wallet’s real change</small></div></div></div>
         <div class="cs-delta" role="listitem"><div class="cs-delta__k">Controls that change the view</div><div class="cs-delta__row">
           <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">12</span><small>tabs, modes, toggles, tool buttons</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
-          <div class="cs-delta__v">1<small>Simple or Detailed</small></div></div></div>
+          <div class="cs-delta__v">1<small>switch; tools in Technical details</small></div></div></div>
         <div class="cs-delta" role="listitem"><div class="cs-delta__k">Times the swap is stated, first screen</div><div class="cs-delta__row">
           <div class="cs-delta__v cs-delta__v--before"><span class="cs-strike">3</span><small>Summary, then two action rows</small></div><span class="cs-delta__arrow" aria-hidden="true">→</span>
           <div class="cs-delta__v">1<small>the receipt</small></div></div></div>
@@ -86,7 +86,7 @@
       <div><dt>App</dt><dd>Solscan, transaction page</dd></div>
       <div><dt>Features</dt><dd>Receipt · Ledger · Route · Exact values</dd></div>
       <div><dt>Built as</dt><dd>Working HTML, desktop and mobile, light and dark</dd></div>
-      <div><dt>Data</dt><dd>Real Jupiter swap <span class="mono">3ae8jL…efShWURb</span>, slot 458450284</dd></div>
+      <div><dt>Data</dt><dd>Real Jupiter swap <span class="mono">3ae8jL…ShWURb</span>, slot 458450284</dd></div>
     </dl>
   </div>
 </section>
@@ -156,8 +156,8 @@
         <h3>Decisions</h3>
         <ul>
           <li><b>One card answers the three questions.</b> A status stamp (“Swap complete, final”), what you gave, what you got after every fee, and what it cost. That is the whole first screen.</li>
-          <li><b>Net, not gross.</b> “You got 0.000494 SOL” is the wallet’s real balance change. Today’s headline figure, 0.000502417, becomes the ledger’s Swap output line, where it is reconciled.</li>
-          <li><b>Plain SOL, not WSOL.</b> Jupiter wrapped and unwrapped it inside the same transaction, so the receipt says SOL and explains WSOL once, on tap.</li>
+          <li><b>Net, not gross.</b> “You got 0.000494 SOL” is the wallet’s real balance change. Today’s headline figure, 0.000502417, becomes the ledger’s “Pool paid out” subtotal, where it is reconciled.</li>
+          <li><b>Plain SOL, not WSOL.</b> The pool paid in wrapped SOL and the same transaction unwrapped it, so the receipt says SOL and explains WSOL once, on tap.</li>
           <li><b>“You” only when it’s true.</b> If the connected wallet signed, the copy says “You gave”. Explorers are public, so anyone else sees “This wallet gave”. Try the toggle above.</li>
           <li><b>Rounded to read, exact on demand:</b> 24.79M and 0.000494 on screen, 24,785,431.639664 and 0.000494183 one hover or tap away.</li>
           <li><b>Cost in dollars first,</b> because 0.000014595 SOL means nothing to a newcomer and “$0.0015” does. It counts all three fees: network, the 1.25% pool fee and the 0.1% Jupiter fee.</li>
@@ -180,7 +180,7 @@
     <div class="cs-before">
       <figure class="cs-shot">
         <div class="cs-shot__img">
-          <img src="img/before-d-fees.png" width="1424" height="420" alt="Current desktop page further down: the cookie banner covers the Fee row; below are Priority Fee, Transaction cost 94,738, compute units, version, lookup tables and block hash." loading="lazy">
+          <img src="img/before-d-fees.png" width="1424" height="420" alt="Current desktop page further down: the cookie banner covers the Fee row; below are Priority Fee, Transaction cost 94,738, compute units, version, lookup tables and block hash.">
           <span class="cs-pin" data-n="1" style="left:16.3%;top:16%">1</span>
           <span class="cs-pin" data-n="5" style="left:43%;top:25.7%">5</span>
           <span class="cs-pin" data-n="2" style="left:32.8%;top:35.2%">2</span>
@@ -189,7 +189,7 @@
       </figure>
       <figure class="cs-shot">
         <div class="cs-shot__img">
-          <img src="img/before-m-fees.png" width="780" height="720" alt="Current page on a phone, 1,080 to 1,440px down: an empty Sponsored slot, then Fee, Priority Fee, Transaction cost 94,738 and compute units." loading="lazy">
+          <img src="img/before-m-fees.png" width="780" height="720" alt="Current page on a phone, 1,080 to 1,440px down: an empty Sponsored slot, then Fee, Priority Fee, Transaction cost 94,738 and compute units.">
           <span class="cs-pin" data-n="1" style="left:22%;top:51%">1</span>
           <span class="cs-pin" data-n="5" style="left:38%;top:62.2%">5</span>
           <span class="cs-pin" data-n="2" style="left:44%;top:73.3%">2</span>
@@ -199,7 +199,7 @@
     </div>
     <ol class="cs-issues">
       <li data-n="1"><span class="cs-n">1</span><span><b>The network fee is 868px down on desktop,</b> behind the cookie banner, and 1,263px down on a phone, under an empty Sponsored slot.</span></li>
-      <li data-n="2"><span class="cs-n">2</span><span><b>“Transaction cost: 94,738” is a block-space score</b> (87,640 compute units plus signature and account-lock costs), not a price, yet it is the row a newcomer reads as the price.</span></li>
+      <li data-n="2"><span class="cs-n">2</span><span><b>“Transaction cost: 94,738” is a block-space score</b> (87,640 compute units plus signature, account-lock and other block-space costs), not a price, yet it is the row a newcomer reads as the price.</span></li>
       <li data-n="3"><span class="cs-n">3</span><span><b>Nothing adds the pieces up.</b> The 0.1% fee appears only as “Transfer … for <code>0.0₆502</code> WSOL to Jupiter Aggregator Authority 11”, and the net change sits in a separate Balance Changes tab. The Pump.fun pool’s own 1.25% fee, 12.7× the Jupiter fee, is only in the program’s event log.</span></li>
       <li data-n="4"><span class="cs-n">4</span><span><b>A hidden cost goes unmentioned.</b> The emptied DICE account still holds 0.00151 SOL of rent, about 3× what this swap was worth.</span></li>
       <li data-n="5"><span class="cs-n">5</span><span><b>USD reprices a finalized transaction on every load.</b> The same 0.000002732 SOL priority fee reads $0.0002811 on one load and $0.0002835 on another.</span></li>
@@ -213,12 +213,12 @@
         <h3>Decisions</h3>
         <ul>
           <li><b>One signed column, read top to bottom like a bank statement.</b> No debit and credit columns to decode. Amounts stay ink with + and −. Selling isn’t a loss, so nothing turns red.</li>
-          <li><b>Pool price, pool fee, Jupiter fee and network fee</b> lead to the change in the wallet: +0.000494183 SOL. The 1.25% pool fee (0.02% to liquidity providers, 0.93% to Pump.fun, 0.30% to the coin creator) is decoded from the pool’s own SellEvent, and only shown when it matches the real transfer to the lamport. No explorer shows it today.</li>
+          <li><b>Sale value, pool fee, Jupiter fee and network fee</b> are the signed lines, and they add up to the change in the wallet: +0.000494183 SOL. The fee splits and the “Pool paid out” subtotal carry no sign, so nobody adds them twice. The 1.25% pool fee (0.02% to liquidity providers, 0.93% to Pump.fun, 0.30% to the coin creator) is decoded from the pool’s own SellEvent, and only shown when it matches the real transfer to the lamport. No explorer shows it today.</li>
           <li><b>Checked, not asserted.</b> The total is compared with the wallet’s real balance before and after (10.714646341 → 10.715140524 SOL). The check mark only renders if they match to the lamport.</li>
           <li><b>Exact here, on purpose.</b> This is where people verify, so the ledger shows all 9 decimals in tabular mono that lines up.</li>
           <li><b>The network fee splits</b> into base (0.000005) and priority (0.000002732) behind one disclosure.</li>
           <li><b>“Good to know” is conditional.</b> It shows only while the emptied DICE account is open and empty. Amber is reserved for it.</li>
-          <li><b>USD is labelled:</b> SOL at $103.85, its price when the swap happened. The figure stops drifting on a finalized transaction.</li>
+          <li><b>USD is labelled and fixed:</b> SOL at $103.79, the price in Solscan’s header on the 390px phone capture, about 5 minutes after the swap; a live page would fix it at swap time. The figure stops drifting on a finalized transaction.</li>
         </ul>
         <p class="cs-screens">Standalone screens: <a href="screens/ledger-desktop.html">desktop 1440</a> · <a href="screens/ledger-mobile.html">mobile 390</a></p>
       </div>
@@ -259,7 +259,7 @@
       </figure>
     </div>
     <ol class="cs-issues">
-      <li data-n="1"><span class="cs-n">1</span><span><b>12 controls change the view.</b> Two modes (Legacy, Summary) and two toggles (Key Actions, Token Account) reshape one list. Next to them sit Tx Maps, Inspect Tx, an explainer button, three tabs, API and a view menu.</span></li>
+      <li data-n="1"><span class="cs-n">1</span><span><b>12 controls change the view.</b> Two modes (Legacy, Summary) and two toggles (Key Actions, Token Account) reshape one list. Next to them sit Tx Maps, Inspect Tx, an explainer button, three tabs, API and a menu (name tag, token info, report).</span></li>
       <li data-n="2"><span class="cs-n">2</span><span><b>“6 Transfer(s)” sits next to 3 rows on desktop and 1 row on a phone.</b></span></li>
       <li data-n="3"><span class="cs-n">3</span><span><b>Defaults differ by breakpoint.</b> Key Actions is off on desktop and on by default on a phone, and the two toggles swap places.</span></li>
       <li data-n="4"><span class="cs-n">4</span><span><b>Rows 1 and 2 repeat the Summary’s amounts.</b> Only the venue changes (Jupiter, then Pump.fun AMM), and nothing says that this is the route.</span></li>
@@ -267,14 +267,14 @@
       <li data-n="6"><span class="cs-n">6</span><span><b>Even the full list doesn’t add up.</b> Legacy Mode shows a 0.0013462 SOL deposit to Pump.fun leaving the wallet and never shows it coming back.</span></li>
     </ol>
 
-    <div class="cs-label">After <i>desktop shows Simple, the phone shows Detailed. The switch works in both.</i></div>
+    <div class="cs-label">After <i>Default is Simple on every screen size. Here the phone is switched to Detailed.</i></div>
     <div class="cs-frame" data-frame="desktop" data-cfg='{"scrollTo":"route"}'></div>
     <div class="cs-after__row">
       <div class="cs-frame" data-frame="phone" data-cfg='{"scrollTo":"route","view":"detailed"}'></div>
       <div class="cs-decisions">
         <h3>Decisions</h3>
         <ul>
-          <li><b>Simple tells the story as a route:</b> your wallet → Jupiter → Pump.fun AMM → your wallet, one plain sentence per stop, with the money on the line itself (24.79M DICE in, 0.000502 SOL out). The 0.1% Jupiter fee is a labelled branch with its amount, instead of a transfer row.</li>
+          <li><b>Simple tells the story as a route:</b> your wallet → Jupiter → Pump.fun AMM → your wallet, one plain sentence per stop, with the money on the line itself (24.79M DICE, wallet → pool; 0.000502 SOL back). Jupiter picked the route but never held the DICE, and the route says so. The 0.1% Jupiter fee is a labelled branch with its amount, instead of a transfer row.</li>
           <li><b>Detailed shows every movement in execution order,</b> each with a plain label, one signed amount, and from → to.</li>
           <li><b>The count always matches the rows:</b> “7 of 7”. It includes the Pump.fun deposit return that today’s page never lists, marked “Missing today”.</li>
           <li><b>The proof is on screen:</b> rows 1, 2, 5 and 7 plus the network fee sum to +0.000494183 SOL. Two temporary accounts were opened and closed, and their 0.00283464 SOL rent came back. That is different from the 0.00151 SOL still held in the empty DICE account.</li>
@@ -292,7 +292,7 @@
   <div class="cs-wrap">
     <p class="cs-kicker"><b>04</b> Exact values, plain words</p>
     <h2 class="cs-h2" id="f4-h">Precise when you ask, plain when you don’t.</h2>
-    <p class="cs-lede">The page shows six-decimal amounts everywhere. Yet its one tiny amount uses a notation that copies wrong, and its labels need a “?” to explain themselves.</p>
+    <p class="cs-lede">The page prints amounts to six or nine decimal places everywhere. Yet its one tiny amount uses a notation that copies wrong, and its labels need a “?” to explain themselves.</p>
 
     <div class="cs-label">Before</div>
     <div class="cs-before">
@@ -343,8 +343,8 @@
           <li><b>Copy gives a plain number</b> (no thousands separators, ASCII minus), so it pastes cleanly into a sheet or a wallet. Selecting text and pressing copy gives exact values too.</li>
           <li><b>Screen readers hear the exact amount:</b> “24.79M, exactly 24,785,431.639664”.</li>
           <li><b>No subscript zeros, anywhere.</b> Small amounts use three significant figures (0.000494) and costs lead with dollars ($0.0015).</li>
-          <li><b>Terms are explained once, where they are used.</b> Final, WSOL, signer, rent deposit, priority fee, compute units and lookup tables each get a dotted underline and a one-sentence definition.</li>
-          <li><b>Technical details stay intact.</b> Signature, block, signer, status, compute, version, lookup tables, blockhash, and Raw JSON, Inspect, Transaction map and API as text links. It is a sticky rail on wide screens and one collapsed section on a phone.</li>
+          <li><b>Terms are explained once, where they are used.</b> Final, WSOL, signer, rent deposit, priority fee, slippage, compute units and lookup tables each get a dotted underline and a one-sentence definition.</li>
+          <li><b>Technical details stay intact.</b> Signature, block, signer, status, compute, version, lookup tables, blockhash, and Balance changes, Raw JSON, Inspect, API, Transaction map and Explain this transaction as text links, with Update name tag, Update token info and Report address from the menu, plus Personal label, beneath. Every address, token amount and program opens its own Solscan page from its popover, and the block number links to its block. Compute keeps the 94,738 “transaction cost” as a sub-line, labelled as a block-space score. It is a sticky rail on wide screens and one collapsed section on a phone.</li>
           <li><b>Ads stay, because they pay for a free explorer,</b> in one labelled box after the answer, never between the user and their numbers.</li>
         </ul>
         <p class="cs-try"><b>Try it:</b> select the “0.000494” above, copy, and paste anywhere. You get <code>0.000494183</code>.</p>
@@ -359,11 +359,11 @@
   <div class="cs-wrap">
     <p class="cs-kicker"><b>05</b> States</p>
     <h2 class="cs-h2" id="st-h">Same layout for every viewer and every outcome.</h2>
-    <p class="cs-lede">The scariest case for a newcomer is a failed swap. The receipt reads it from the same fields Solscan already has (<code>meta.err</code> and <code>fee</code>): your DICE was not moved, and you still paid the network fee.</p>
+    <p class="cs-lede">The scariest case for a newcomer is a failed swap. The receipt reads it from the same fields Solscan already has: your DICE was not moved, and you still paid the network fee.</p>
     <div class="cs-states">
       <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"viewer":"signer"}'></div><figcaption><b>Your swap</b>The connected wallet signed it</figcaption></figure>
       <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"viewer":"visitor"}'></div><figcaption><b>Someone else’s swap</b>Same facts, “This wallet” instead of “you”</figcaption></figure>
-      <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"status":"failed"}'></div><figcaption><b>Didn’t go through</b>Example state, not a real failed transaction</figcaption></figure>
+      <figure class="cs-state"><div class="cs-frame" data-frame="phone" data-cfg='{"status":"failed"}'></div><figcaption><b>Didn’t go through</b>Example, not a real transaction</figcaption></figure>
     </div>
     <p class="cs-screens" style="justify-content:center">Standalone screens: <a href="screens/failed-desktop.html">failed, desktop</a> · <a href="screens/failed-mobile.html">failed, mobile</a> · <a href="prototype.html?as=visitor">visitor view, live</a></p>
   </div>
@@ -391,10 +391,10 @@
         <ul>
           <li><b>No plain answer</b> to “did it work, what did I get, what did it cost?”. The page speaks for the protocol and calls you “Signer”.</li>
           <li><b>The headline isn’t the outcome.</b> It says 0.000502417 WSOL, after the pool’s fee but before the others. The wallet changed by +0.000494183 SOL after a 0.1% Jupiter fee and the network fee.</li>
-          <li><b>Fees are hard to find.</b> The fee is 868px down on desktop, under a cookie banner, and 1,263px down on a phone. “Transaction cost: 94,738” is a block-space score (87,640 compute units plus signature and account-lock costs), not a price.</li>
+          <li><b>Fees are hard to find.</b> The fee is 868px down on desktop, under a cookie banner, and 1,263px down on a phone. “Transaction cost: 94,738” is a block-space score (87,640 compute units plus signature, account-lock and other block-space costs), not a price.</li>
           <li><b>Repetition and noise.</b> The swap is stated three times on the first screen, there are 15 copy icons and 12 view controls, and green has seven jobs.</li>
           <li><b>Numbers that mislead.</b> “0.0₆502” copies as 0.06502 (129,522× off), and USD reprices a finalized transaction on every load.</li>
-          <li><b>Hidden costs.</b> The Pump.fun pool kept a 1.25% fee (0.000006361 SOL, 12.7× the Jupiter fee) that the page never shows. In all, the swap paid about $0.0015 in three fees. The emptied DICE account still holds 0.00151 SOL of rent, about 3× the swap’s value, and nothing says so.</li>
+          <li><b>Hidden costs.</b> The Pump.fun pool kept a 1.25% fee (0.000006361 SOL, 12.7× the Jupiter fee) that the page never shows. At this pool’s current 1.25% rate, a $1,000 sale pays $12.50 to the pool, and today’s page never shows it. In all, this swap paid about $0.0015 in three fees. The emptied DICE account still holds 0.00151 SOL of rent, about 3× the swap’s value, and nothing says so.</li>
           <li><b>Inconsistent and incomplete.</b> Defaults differ between phone and desktop, and the transfer list never shows a 0.0013462 SOL deposit coming back.</li>
         </ul>
       </div>
@@ -414,7 +414,8 @@
         <h3>Kept for power users</h3>
         <ul>
           <li><b>Detailed view:</b> all 7 movements in execution order, with addresses, the balance sum and program steps with compute units. It also has the raw transaction JSON.</li>
-          <li><b>Technical details:</b> full signature with copy, block, signer, finality, compute limit and priority price. It also has version, both lookup tables, blockhash, and Raw JSON, Inspect, Transaction map and API links.</li>
+          <li><b>Technical details:</b> full signature with copy, block, signer, finality, compute limit and priority price. It also has version, both lookup tables, blockhash, and Balance changes, Raw JSON, Inspect, API, Transaction map and Explain this transaction links.</li>
+          <li><b>Every control from today’s page has a place:</b> the three tabs become sections, the modes and toggles become Simple / Detailed, Tx Maps, Inspect Tx, API, the Explanation button and the menu’s items become rail links, and the ad menus merge into one Sponsored box.</li>
           <li><b>Depth that sticks.</b> Detailed persists across transactions and is in the URL, so you choose once.</li>
           <li><b>Exact values everywhere,</b> including base units and decimals.</li>
         </ul>
@@ -438,7 +439,7 @@
 <footer class="cs-foot">
   <div class="cs-wrap">
     <p><b>Concept redesign by Swiftbot (<a href="https://github.com/swiftbotlab">github.com/swiftbotlab</a>). Not affiliated with Solscan.</b></p>
-    <p>Before screenshots were captured from solscan.io on October 18, 2026. Transaction data was fetched from public Solana RPC (getTransaction, jsonParsed): signature 3ae8jL6Y6DxM1PiZdiQH4J4dXVaGs3R3JLtCweWT4iSYyY9gxQWSwZx21KLQfMrknt5fi58HUufF3YW1efShWURb. USD figures use SOL at $103.85, the price Solscan showed 11 seconds after the swap. The failed state is an illustration built on the same data shape.</p>
+    <p>Before screenshots were captured from solscan.io on October 18, 2026. Transaction data was fetched from public Solana RPC (getTransaction, jsonParsed): signature 3ae8jL6Y6DxM1PiZdiQH4J4dXVaGs3R3JLtCweWT4iSYyY9gxQWSwZx21KLQfMrknt5fi58HUufF3YW1efShWURb. USD figures use SOL at $103.79, the price in Solscan’s header on the 390px phone capture, about 5 minutes after the swap. The failed state is an illustration built on the same data shape.</p>
   </div>
 </footer>
 

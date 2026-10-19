@@ -12,12 +12,18 @@
     route: { scrollTo: 'route' },
     'route-detailed': { scrollTo: 'route', view: 'detailed' },
     exact: mobile ? { demo: ['gave', 'sheet'] } : { demo: ['got', 'pop'] },
-    details: mobile ? { scrollTo: 'tech', techOpen: true } : { demo: ['finalized', 'pop'] },
+    details: mobile ? { scrollTo: 'tech', techOpen: true } : { demo: ['final', 'pop'] },
     glossary: { demo: ['final', 'sheet'] },
     failed: { status: 'failed' },
     visitor: { viewer: 'visitor' }
   };
   var cfg = C[screen] || {};
+  /* ?splits=0 keeps both fee splits closed, for a short ledger specimen (board 07) */
+  try { if (new URLSearchParams(window.location.search).get('splits') === '0') { cfg = Object.assign({}, cfg, { feeOpen: false, poolOpen: false }); } } catch (e) { /* ignore */ }
+  /* Every fixed screen reads the same clock, so all frames say the same "N minutes ago": 52 minutes after the
+     swap, what the desktop before capture reads. ?now=<unix seconds> overrides it. */
+  var NOW = (window.TX.blockTime + 52 * 60) * 1000;
+  try { var qn = Number(new URLSearchParams(window.location.search).get('now')); if (qn > 0) NOW = qn * 1000; } catch (e) { /* keep default */ }
   var canvas = document.querySelector('.canvas');
   var scroller = document.querySelector('.canvas__scroll');
   var root = document.getElementById('app');
@@ -36,11 +42,13 @@
   }
   var api = SS.mount(root, {
     scroller: scroller, layerHost: canvas, width: mobile ? 390 : 1440,
-    viewer: cfg.viewer, status: cfg.status, view: cfg.view, feeOpen: cfg.feeOpen, poolOpen: cfg.poolOpen, techOpen: cfg.techOpen
+    viewer: cfg.viewer, status: cfg.status, view: cfg.view, feeOpen: cfg.feeOpen, poolOpen: cfg.poolOpen, techOpen: cfg.techOpen, now: NOW
   });
   function settle() {
     if (cfg.scrollTo) api.scrollTo(cfg.scrollTo);
     if (cfg.demo) api.demo(cfg.demo[0], cfg.demo[1]);
+    /* ?y=<px> scrolls the canvas to an exact offset, for board crops further down a long screen */
+    try { var qy = Number(new URLSearchParams(window.location.search).get('y')); if (qy > 0) scroller.scrollTop = qy; } catch (e) { /* ignore */ }
     document.documentElement.setAttribute('data-ready', '1');
   }
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(settle);

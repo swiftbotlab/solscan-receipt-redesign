@@ -377,7 +377,7 @@
     err: meta.err,
     signer: signer,
     fee: fee, baseFee: baseFee, priorityFee: priorityFee, signatures: signatures.length,
-    cuUsed: meta.computeUnitsConsumed, cuLimit: cuLimit, cuPrice: cuPrice,
+    cuUsed: meta.computeUnitsConsumed, cuLimit: cuLimit, cuPrice: cuPrice, costUnits: meta.costUnits,
     signerDelta: signerDelta,
     signerPre: meta.preBalances[signerIdx], signerPost: meta.postBalances[signerIdx],
     movementsReconcile: movementsReconcile,

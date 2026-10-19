@@ -28,7 +28,8 @@
     ['0.000494183 SOL', '0.000494 SOL', 'Under 1: three significant figures'],
     ['0.000014595 SOL', '$0.0015', 'Costs: dollars first, two significant figures, SOL beside'],
     ['0.000000502 SOL', '0.000000502', 'Never 0.0₆502. Copies exactly'],
-    ['$0.0513', '≈ $0.051', 'Two significant figures, price at swap time'],
+    /* exact USD of the net change: lamports × price in cents, so nothing is rounded before it is shown */
+    ['$' + F.units(T.signerDelta * Math.round(T.price * 100), 11, { trim: true }), '≈ $0.051', 'Two significant figures, one fixed price per swap'],
     ['458450284', '458450284', 'Identifiers stay whole, never grouped']
   ];
 
@@ -65,21 +66,30 @@
 
       '<section class="sy-card sy-status"><h3 class="sy-h">Status</h3>' +
         '<div class="sy-st"><span class="ss-stamp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>Swap complete</span><p>Final, can’t be reversed.</p></div>' +
-        '<div class="sy-st"><span class="ss-stamp ss-stamp--wait"><span class="ss-pulse" aria-hidden="true"></span>Confirming</span><p>Usually a few seconds. No need to send it again.</p></div>' +
+        '<div class="sy-st"><span class="ss-stamp ss-stamp--wait"><span class="ss-pulse" aria-hidden="true"></span>Confirming</span><p>Usually a few seconds. No need to send it again.<span class="sy-plan">Planned state, not in the prototype yet</span></p></div>' +
         '<div class="sy-st"><span class="ss-stamp ss-stamp--fail"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Didn’t go through</span><p>Your DICE was not moved. You still paid the network fee.</p></div>' +
         '<p class="sy-note">Icon, word and colour together, so status never depends on colour alone.</p></section>' +
 
       '<section class="sy-card sy-words"><h3 class="sy-h">Plain words, exact values</h3><div class="sy-pops">' +
-        '<div class="ss-pop sy-pop"><div class="ss-pop__k">In plain words</div><div class="ss-pop__title">Finalized</div><p class="ss-pop__p">Enough of the network has confirmed this transaction that it can no longer be rolled back. It is permanent.</p></div>' +
+        '<div class="ss-pop sy-pop"><div class="ss-pop__k">In plain words</div><div class="ss-pop__title">Finalized</div><p class="ss-pop__p">Enough of the network has confirmed this transaction that it can no longer be reversed. It is permanent.</p></div>' +
         '<div class="ss-pop sy-pop"><div class="ss-pop__k">Jupiter fee</div><div class="ss-pop__v">0.000000502 <span>SOL</span></div><p class="ss-pop__meta"><span class="mono">502</span> lamports, 9 decimals</p>' +
           '<div class="ss-pop__foot"><span>Copies as <code>0.000000502</code></span><span class="ss-btn ss-btn--sm">Copy exact</span></div></div>' +
         '</div><p class="sy-note">Dotted underline = a definition. Desktop: popover on hover, focus or click. Phone: bottom sheet on tap or long-press.</p></section>' +
 
-      '<section class="sy-card sy-misc"><h3 class="sy-h">Addresses and spacing</h3>' +
-        '<div class="sy-addr"><span class="mono">' + F.short(T.signer) + '</span><span>First 6, last 6, mono, Ink 3. Full value on demand.</span></div>' +
-        '<div class="sy-addr"><span class="mono">' + sig + '</span><span>Signatures follow the same rule.</span></div>' +
-        '<div class="sy-space">' + [4, 8, 12, 16, 24, 32, 40, 48, 64].map(function (n) { return '<span><i style="width:' + n + 'px;height:' + n + 'px"></i>' + n + '</span>'; }).join('') + '</div>' +
-        '<p class="sy-note">One 8px scale with a 4px half step. Hairlines instead of cards inside cards. Rows 48px or taller on phones.</p></section>' +
+      /* the identity shift, with colours sampled from the solscan.io capture (before/solscan_tx_desktop.png) */
+      '<section class="sy-card sy-misc sy-id"><h3 class="sy-h">From Solscan’s identity to the receipt system</h3>' +
+        '<div class="sy-id__k">Solscan today</div><div class="sy-id__row">' +
+          [['#009978', 'Buttons'], ['#00E8B4', 'Logo'], ['#1890FF', 'Links'], ['#C74AE3', 'Search']].map(function (c) {
+            return '<span><i style="background:' + c[0] + '"></i>' + c[1] + '<code>' + c[0] + '</code></span>'; }).join('') + '</div>' +
+        '<div class="sy-id__k">Receipt system</div><div class="sy-id__row">' +
+          [['#14B57A', 'Accent'], ['#0A7A52', 'Accent ink'], ['#15171A', 'Ink'], ['#FAFAF8', 'Paper']].map(function (c) {
+            return '<span><i style="background:' + c[0] + '"></i>' + c[1] + '<code>' + c[0] + '</code></span>'; }).join('') + '</div>' +
+        '<ul class="sy-id__why">' +
+          '<li>Green stays as the bridge to Solscan’s brand: two jobs (success, the one primary action), not seven.</li>' +
+          '<li>Blue links and magenta go, so nothing competes with the status.</li>' +
+          '<li>Paper and ink: a receipt should read like one.</li>' +
+          '<li>Mono for exact figures.</li>' +
+        '</ul></section>' +
 
       '</div></div>';
   }

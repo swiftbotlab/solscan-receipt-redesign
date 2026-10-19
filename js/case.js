@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var SIG_SHORT = '3ae8jL…efShWURb';
+  var SIG_SHORT = '3ae8jL…ShWURb';
   var frames = [];
   var viewer = 'signer';
 

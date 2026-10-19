@@ -38,7 +38,8 @@
     link: function (s) { return ic('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>', s); },
     share: function (s) { return ic('<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M6 12v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6"/>', s); },
     ext: function (s) { return ic('<path d="M14 5h5v5M19 5l-8 8"/><path d="M17 14v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4"/>', s); },
-    retry: function (s) { return ic('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>', s); }
+    retry: function (s) { return ic('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>', s); },
+    device: function (s) { return ic('<rect x="7" y="2.5" width="10" height="19" rx="3"/><rect x="9.5" y="5.5" width="5" height="4.5" rx="1"/><circle cx="12" cy="15.5" r="1.8"/>', s, 1.6); }
   };
   function tok(sym) {
     if (sym === 'SOL' || sym === 'WSOL') return '<span class="ss-tok ss-tok--sol" aria-hidden="true"><i></i></span>';
@@ -47,8 +48,8 @@
 
   /* ---------- glossary: one sentence each ---------- */
   var TERMS = {
-    finalized: ['Finalized', 'Enough of the network has confirmed this transaction that it can no longer be rolled back. It is permanent.'],
-    wsol: ['WSOL (wrapped SOL)', 'SOL in token form, so swap programs can trade it like any other token. Jupiter wrapped it for this swap and unwrapped it back to plain SOL before the transaction ended.'],
+    finalized: ['Finalized', 'Enough of the network has confirmed this transaction that it can no longer be reversed. It is permanent.'],
+    wsol: ['WSOL (wrapped SOL)', 'The pool paid in wrapped SOL; this transaction then closed the temporary account, unwrapping it back to plain SOL.'],
     signer: ['Signer', 'The wallet that approved this transaction with its key. It also paid the fees.'],
     rent: ['Rent deposit', 'Solana keeps a small amount of SOL in every account to hold it open. It comes back when the account is closed.'],
     netfee: ['Network fee', 'What Solana charges to process a transaction: 0.000005 SOL per signature, plus any priority fee.'],
@@ -57,8 +58,19 @@
     pool: ['Pool (AMM)', 'A shared pot of two tokens that trades automatically, at a price set by how much of each it holds.'],
     tokenacct: ['Token account', 'A small account that holds one kind of token for one wallet. Each one needs its own rent deposit.'],
     cu: ['Compute units', 'How much work the transaction asked validators to do. The limit sets the priority fee; it is not the price of the swap.'],
-    lookup: ['Lookup table', 'A saved list of addresses, so a transaction can use many accounts and still fit in one packet.']
+    lookup: ['Lookup table', 'A saved list of addresses, so a transaction can use many accounts and still fit in one packet.'],
+    slippage: ['Slippage limit', 'The most the price may move against you before the swap cancels itself. A higher limit fails less often but can cost you more.']
   };
+
+  /* links out to the pages today's blue links open: accounts, tokens, programs and the block */
+  var SOLSCAN = 'https://solscan.io';
+  function goLink(href, text) {
+    return '<p class="ss-pop__go"><a href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + text + I.ext(13) + '</a></p>';
+  }
+  function labelled(name) { for (var k in T.labels) if (T.labels[k] === name) return k; return null; }
+  var TERM_PAGES = {};
+  if (labelled('Jupiter Aggregator v6')) TERM_PAGES.jupiter = { id: labelled('Jupiter Aggregator v6'), label: 'Jupiter Aggregator v6' };
+  if (labelled('Pump.fun AMM')) TERM_PAGES.pool = { id: labelled('Pump.fun AMM'), label: 'Pump.fun AMM program' };
 
   /* ---------- derived display values ---------- */
   var SOLD = T.sold;
@@ -105,7 +117,8 @@
     var abs = Math.abs(Number(raw));
     var exact = F.units(abs, decimals, { trim: true, group: false });
     var grouped = F.units(abs, decimals, { trim: true });
-    var k = ctx.key({ kind: 'amt', raw: abs, decimals: decimals, sym: sym, exact: exact, grouped: grouped, what: o.what || '', usd: o.usd });
+    var mint = sym === 'WSOL' ? SOL : (T.sold && sym === T.soldToken.symbol ? T.sold.mint : null);
+    var k = ctx.key({ kind: 'amt', raw: abs, decimals: decimals, sym: sym, exact: exact, grouped: grouped, what: o.what || '', usd: o.usd, mint: mint });
     var shown = text != null ? text : grouped;
     var sign = o.sign ? (Number(raw) < 0 ? '−' : '+') : '';
     var copySign = o.sign && Number(raw) < 0 ? '-' : '';
@@ -115,7 +128,8 @@
   }
   function addr(ctx, a, label, o) {
     o = o || {};
-    var k = ctx.key({ kind: 'addr', addr: a, label: label || '', note: o.note || '' });
+    var k = ctx.key({ kind: 'addr', addr: a, label: label || '', note: o.note || '', page: o.page === false ? null : SOLSCAN + '/account/' + a,
+      owner: o.owner || null, ownerName: o.ownerName || '' });
     return '<button type="button" class="ss-addr" data-k="' + k + '" data-exact="' + esc(a) + '"' + (o.demo ? ' data-demo="' + o.demo + '"' : '') +
       ' aria-label="' + esc((label ? label + ', ' : '') + 'address ' + F.short(a)) + '">' + esc(F.short(a)) + '</button>';
   }
@@ -157,7 +171,7 @@
   function receipt(ctx) {
     var ok = ctx.ok();
     var when = F.dateUTC(T.blockTime);
-    var ago = F.ago(T.blockTime);
+    var ago = F.ago(T.blockTime, ctx.opts.now);
     var gotUsd = usdOf(T.signerDelta);
     var stamp = ok
       ? '<span class="ss-stamp">' + I.check(14) + 'Swap complete</span><span class="ss-final">' + term(ctx, 'finalized', 'Final', 'final') + ', can’t be reversed</span>'
@@ -189,13 +203,14 @@
           '<span class="ss-cost__v">' + usdText(usdOf(T.fee)) + ' <span class="mono">' + amt(ctx, T.fee, 9, 'SOL', F.units(T.fee, 9, { trim: true }), { what: 'Network fee', usd: usdOf(T.fee) }) + ' SOL</span></span>' +
           '<span class="ss-cost__how">' + ctx.you('You still paid the ', 'It still paid the ') + term(ctx, 'netfee', 'network fee', null) + '.</span></div>';
     var reason = ok ? '' :
-      '<p class="ss-reason">' + I.alert(16) + '<span><b>Why:</b> price moved past ' + ctx.you('your', 'the') + ' slippage limit · error 6001</span></p>';
+      '<p class="ss-reason">' + I.alert(16) + '<span><b>Why:</b> the price moved more than ' + ctx.you('your', 'the') + ' ' + term(ctx, 'slippage', 'slippage limit', 'slippage') +
+        ' allowed before the swap landed, so nothing was traded.' + ctx.you(' Try again; if it keeps failing, try a smaller amount.', '') + '</span></p>';
     var h = ctx.h(1);
     return '<section class="ss-receipt" data-sec="receipt"' + ctx.lab(ctx.id + '-t') + '>' +
       '<div class="ss-receipt__body">' +
         '<div class="ss-receipt__status">' + stamp + '</div>' +
         '<' + h + ' class="ss-receipt__title" id="' + ctx.id + '-t">' + title + '</' + h + '>' +
-        '<p class="ss-receipt__meta"><span class="ss-seg-t">On ' + term(ctx, 'jupiter', 'Jupiter', null) + '</span><span class="ss-dot ss-dot--first" aria-hidden="true">·</span><span class="ss-seg-t">' + esc(when.date) + ', ' + esc(when.time) + '</span>' +
+        '<p class="ss-receipt__meta"><span class="ss-seg-t">Via Jupiter</span><span class="ss-dot ss-dot--first" aria-hidden="true">·</span><span class="ss-seg-t">' + esc(when.date) + ', ' + esc(when.time) + '</span>' +
           '<span class="ss-dot" aria-hidden="true">·</span><time class="ss-seg-t" datetime="' + new Date(T.blockTime * 1000).toISOString() + '">' + esc(ago) + '</time></p>' +
         '<div class="ss-pair">' + gave +
           '<div class="ss-pair__arrow" aria-hidden="true"><span>' + '<span class="ss-arrow-d">' + I.down(16) + '</span><span class="ss-arrow-r">' + I.right(16) + '</span></span></div>' +
@@ -211,13 +226,17 @@
   function ledger(ctx) {
     var ok = ctx.ok();
     var rowsId = ctx.id + '-fee';
-    var lam = function (raw, demo) { return '<span class="ss-num">' + amt(ctx, raw, 9, 'SOL', F.units(Math.abs(raw), 9), { sign: true, demo: demo }) + '</span>'; };
+    /* signed lines add up to the total; split rows and the subtotal carry no sign, so nobody adds them twice */
+    var lam = function (raw, demo, how) {
+      var o = { sign: !how, demo: demo };
+      return '<span class="ss-num">' + (how === 'sum' ? '<span class="ss-eq" aria-hidden="true">= </span>' : '') + amt(ctx, raw, 9, 'SOL', F.units(Math.abs(raw), 9), o) + '</span>';
+    };
     /* a row whose label opens sub-rows (network fee split, pool fee split) */
     function disclosed(name, label, note, raw, open, subs) {
       return '<tr><th scope="row"><button type="button" class="ss-disclose" data-act="rows" data-rows="' + name + '" aria-expanded="' + open + '" aria-controls="' + rowsId + '">' +
           '<span class="ss-ledger__what">' + label + '</span>' + I.chev(16) + '</button>' +
           '<span class="ss-ledger__note">' + note + '</span></th><td>' + lam(raw) + '</td></tr>' +
-        subs.map(function (r) { return '<tr class="is-sub" data-rows="' + name + '"' + (open ? '' : ' hidden') + '><th scope="row">' + r[0] + '</th><td>' + lam(r[1]) + '</td></tr>'; }).join('');
+        subs.map(function (r) { return '<tr class="is-sub" data-rows="' + name + '"' + (open ? '' : ' hidden') + '><th scope="row">' + r[0] + '</th><td>' + lam(r[1], null, 'part') + '</td></tr>'; }).join('');
     }
     var feeOpen = !!ctx.opts.feeOpen;
     var feeRows = disclosed('fee', 'Network fee', 'Paid to Solana to process the transaction', -T.fee, feeOpen, [
@@ -229,13 +248,13 @@
     else if (POOL) {
       var poolOpen = ctx.opts.poolOpen != null ? !!ctx.opts.poolOpen : feeOpen;
       body =
-        '<tr><th scope="row"><span class="ss-ledger__what">Pool price, before its fee</span><span class="ss-ledger__note">What the Pump.fun pool paid for ' + esc(F.compact(soldUi)) + ' ' + esc(SOLD_SYM) + '</span></th><td>' + lam(T.poolGross) + '</td></tr>' +
+        '<tr><th scope="row"><span class="ss-ledger__what">Sale value, before the pool’s fee</span><span class="ss-ledger__note">' + esc(F.compact(soldUi)) + ' ' + esc(SOLD_SYM) + ' at the Pump.fun pool’s price</span></th><td>' + lam(T.poolGross) + '</td></tr>' +
         disclosed('pool', '<span class="ss-c">Pool fee</span><span class="ss-w">Pump.fun pool fee</span>, ' + pct(T.poolFeePct), 'Kept by the Pump.fun pool, read from its own event log', -T.poolFee, poolOpen, [
           ['Liquidity providers, ' + bps(POOL.lpBps), -POOL.lp],
           ['Pump.fun protocol, ' + bps(POOL.protocolBps), -POOL.protocol],
           ['Coin creator, ' + bps(POOL.creatorBps), -POOL.creator]
         ]) +
-        '<tr class="is-subtotal"><th scope="row"><span class="ss-ledger__what">Swap output<span class="vh">, subtotal</span></span><span class="ss-ledger__note">What the pool paid out, after its fee</span></th><td>' + lam(T.swapOut, 'swapout') + '</td></tr>' +
+        '<tr class="is-subtotal"><th scope="row"><span class="ss-ledger__what">Pool paid out, after its fee<span class="vh">, subtotal</span></span><span class="ss-ledger__note">Subtotal. Today’s headline shows this, in WSOL</span></th><td>' + lam(T.swapOut, 'swapout', 'sum') + '</td></tr>' +
         '<tr><th scope="row"><span class="ss-ledger__what">Jupiter fee</span><span class="ss-ledger__note">' + pct(T.aggFeePct) + ' of the output</span></th><td>' + lam(-T.aggFee, 'jupfee') + '</td></tr>' +
         feeRows;
     } else {
@@ -271,7 +290,7 @@
     var h = ctx.h(2);
     return '<section class="ss-sec" data-sec="ledger"' + ctx.lab(ctx.id + '-l') + '>' +
       '<div class="ss-sec__head"><div><' + h + ' class="ss-sec__title" id="' + ctx.id + '-l">Where the money went</' + h + '>' +
-      '<p class="ss-sec__lede">' + (ok ? 'In SOL. Every line adds up to the real change in ' + ctx.you('your', 'this') + ' wallet, to the last lamport.' : 'Only the network fee left ' + ctx.you('your', 'this') + ' wallet.') + '</p></div></div>' +
+      '<p class="ss-sec__lede">' + (ok ? 'Read down: the signed lines add up. The last line is the real change in ' + ctx.you('your', 'this') + ' wallet, to the lamport.' : 'Only the network fee left ' + ctx.you('your', 'this') + ' wallet.') + '</p></div></div>' +
       '<table class="ss-ledger"><caption class="vh">Where the money went, in SOL</caption><tbody id="' + rowsId + '">' + body + '</tbody><tfoot>' + total + '</tfoot></table>' +
       check + tokRow + note + '</section>';
   }
@@ -283,17 +302,20 @@
     var arrow = '<span class="ss-stop__arrow" aria-hidden="true">' + I.chevR(12) + '</span>';
     /* the money on the line: a chip on each connector. It repeats the stop text, so it is hidden from screen
        readers and kept out of the tab order, but a pointer still opens its exact value. */
-    function flow(raw, decimals, sym, text) {
+    function flow(raw, decimals, sym, text, via) {
       return '<span class="ss-flow" aria-hidden="true">' +
-        amt(ctx, raw, decimals, sym, text, { cls: 'ss-flow__chip', tab: -1, html: esc(text) + ' <span>' + esc(sym) + '</span>' + I.chevR(12) }) + '</span>';
+        amt(ctx, raw, decimals, sym, text, { cls: 'ss-flow__chip', tab: -1, html: esc(text) + ' <span>' + esc(sym) + '</span>' +
+          (via ? '<em class="ss-flow__via">' + via + '</em>' : '') + I.chevR(12) }) + '</span>';
     }
     function initial(ch) { return '<span class="ss-stop__ini" aria-hidden="true">' + ch + '</span>'; }
     var sold = F.compact(soldUi);
     var stops = ok ? [
-      { cls: 'is-you', icon: I.wallet(20), name: esc(you), what: 'Approved the swap', amt: 'Sent ' + amt(ctx, SOLD.delta, SOLD.decimals, SOLD_SYM, sold) + ' ' + esc(SOLD_SYM),
-        flow: flow(SOLD.delta, SOLD.decimals, SOLD_SYM, sold) },
-      { icon: initial('J'), name: term(ctx, 'jupiter', 'Jupiter', null), what: 'Found the best price across exchanges', amt: 'Sent all of it to one pool',
-        flow: flow(SOLD.delta, SOLD.decimals, SOLD_SYM, sold) },
+      /* non-custodial, shown honestly: the DICE moved from the wallet straight to the pool's vault, so it rides
+         on one chip, and Jupiter's stop says it never held it */
+      { cls: 'is-you is-short', icon: I.wallet(20), name: esc(you), what: 'Approved the swap' },
+      { icon: initial('J'), name: term(ctx, 'jupiter', 'Jupiter', null), what: 'Picked the route',
+        amt: 'Never held ' + ctx.you('your', 'its') + ' ' + esc(SOLD_SYM) + ': it went straight to the pool',
+        flow: flow(SOLD.delta, SOLD.decimals, SOLD_SYM, sold, 'wallet → pool') },
       { icon: initial('P'), name: term(ctx, 'pool', 'Pump.fun AMM', null), what: 'The pool that filled the trade',
         amt: (POOL ? 'Kept a ' + pct(T.poolFeePct) + ' fee, paid ' : 'Paid ') + amt(ctx, T.swapOut, 9, 'SOL', solRound(T.swapOut)) + ' SOL',
         flow: flow(T.swapOut, 9, 'SOL', solRound(T.swapOut)) },
@@ -307,7 +329,7 @@
     var html = '';
     stops.forEach(function (s, i) {
       html += '<li class="ss-stop ' + (s.cls || '') + '"><span class="ss-stop__dot">' + s.icon + '</span>' + (ok ? '' : arrow) +
-        '<div class="ss-stop__body"><div class="ss-stop__name">' + s.name + '</div><div class="ss-stop__what">' + s.what + '</div><div class="ss-stop__amt">' + s.amt + '</div></div>' +
+        '<div class="ss-stop__body"><div class="ss-stop__name">' + s.name + '</div><div class="ss-stop__what">' + s.what + '</div>' + (s.amt ? '<div class="ss-stop__amt">' + s.amt + '</div>' : '') + '</div>' +
         (s.flow || '') + '</li>';
       if (ok && i === 2) {
         html += '<li class="ss-branch">' +
@@ -317,14 +339,14 @@
       }
     });
     var simple = '<ol class="ss-route' + (ok ? ' ss-route--flow' : '') + '" aria-label="Route of the swap">' + html + '</ol>' +
-      '<p class="ss-route__foot">' + (ok ? 'One hop, one pool. Jupiter sent the whole trade through Pump.fun AMM.' : 'Nothing moved except the network fee.') + '</p>';
+      (ok ? '' : '<p class="ss-route__foot">Nothing moved except the network fee.</p>');
     var seg = '<div class="ss-seg" role="radiogroup" aria-label="Level of detail">' +
       '<button type="button" role="radio" data-act="view" data-v="simple" aria-checked="' + (view === 'simple') + '" tabindex="' + (view === 'simple' ? 0 : -1) + '">Simple</button>' +
       '<button type="button" role="radio" data-act="view" data-v="detailed" aria-checked="' + (view === 'detailed') + '" tabindex="' + (view === 'detailed' ? 0 : -1) + '">Detailed</button></div>';
     var h = ctx.h(2);
     return '<section class="ss-sec" data-sec="route"' + ctx.lab(ctx.id + '-r') + '>' +
       '<div class="ss-sec__head"><div><' + h + ' class="ss-sec__title" id="' + ctx.id + '-r">How it happened</' + h + '>' +
-      '<p class="ss-sec__lede">' + (view === 'simple' ? 'The short version. Switch to Detailed for every movement.' : 'Every movement, in the order it ran.') + '</p></div>' + seg + '</div>' +
+      '<p class="ss-sec__lede">' + (view === 'simple' ? (ok ? 'One hop, one pool: Jupiter sent the whole trade through Pump.fun AMM.' : 'The short version. Switch to Detailed for every movement.') : 'Every movement, in the order it ran.') + '</p></div>' + seg + '</div>' +
       (view === 'simple' ? simple : detail(ctx)) + '</section>';
   }
 
@@ -332,12 +354,21 @@
   PARTY[T.tempAccounts[0]] = 'Temporary SOL account';
   PARTY[T.tempAccounts[1]] = 'Pump.fun tracking account';
   PARTY[T.poolOwner] = 'Pump.fun pool';
-  PARTY[T.aggFeeTo] = 'Jupiter fee account';
 
   function party(ctx, a) {
     if (a === T.signer) return '<span class="ss-party">' + ctx.you('You', 'This wallet') + '</span>';
     var name = PARTY[a] || T.labels[a] || 'Account';
     return '<span class="ss-party">' + esc(name) + '</span> ' + addr(ctx, a, (T.labels[a] ? T.labels[a] : name));
+  }
+  /* a token transfer moves between token accounts: show the account itself, named for its owner */
+  function acctParty(ctx, acct, owner, sym) {
+    if (PARTY[acct]) return party(ctx, acct);
+    var ownerName = owner === T.signer ? ctx.you('your wallet', 'this wallet') : (T.labels[owner] || F.short(owner));
+    var name = owner === T.signer ? ctx.you('Your ', 'Its ') + sym + ' account'
+      : owner === T.poolOwner ? 'Pump.fun pool vault'
+      : owner === T.aggFeeTo ? 'Jupiter fee account' : sym + ' account';
+    return '<span class="ss-party">' + esc(name) + '</span> ' + addr(ctx, acct, sym + ' token account, owned by ' + ownerName,
+      owner === T.signer ? null : { owner: owner, ownerName: ownerName });
   }
 
   function detail(ctx) {
@@ -377,10 +408,8 @@
         sub = 'Taken from the swap output';
         amount = amt(ctx, -m.raw, 9, 'WSOL', null, { sign: true }) + '<span class="ss-unit">WSOL</span>';
       }
-      var fromA = m.kind === 'token' ? (m.from === T.signer ? m.fromAcct : m.from) : m.from;
-      var toA = m.kind === 'token' ? (m.to === T.signer ? m.toAcct : m.to) : m.to;
-      from = fromA === T.signer || (m.kind === 'token' && m.from === T.signer && m.mint !== SOL) ? party(ctx, T.signer) : party(ctx, fromA);
-      to = toA === T.signer ? party(ctx, T.signer) : party(ctx, toA);
+      if (m.kind === 'token') { from = acctParty(ctx, m.fromAcct, m.from, m.symbol); to = acctParty(ctx, m.toAcct, m.to, m.symbol); }
+      else { from = party(ctx, m.from); to = party(ctx, m.to); }
       return '<li><span class="ss-moves__n">' + m.n + '</span><div class="ss-moves__what">' + what + '<small>' + sub + '</small></div>' +
         '<div class="ss-moves__amt">' + amount + '</div><div class="ss-moves__path">' + from + arrow + to + '</div></li>';
     }).join('');
@@ -395,7 +424,7 @@
     var rows = walletRows.map(function (m) { return m.n; });
     var steps = T.steps.map(function (s) {
       var pct = Math.max(1.5, s.cu / T.cuUsed * 100);
-      return '<li><span class="ss-steps__n">' + s.index + '</span><span>' + esc(s.title) + '<span class="ss-steps__prog">' + esc(s.program) + '</span></span>' +
+      return '<li><span class="ss-steps__n">' + s.index + '</span><span>' + esc(s.title) + '<a class="ss-steps__prog" href="' + SOLSCAN + '/account/' + esc(s.programId) + '" target="_blank" rel="noopener noreferrer">' + esc(s.program) + '</a></span>' +
         '<span class="ss-steps__cu">' + F.group(String(s.cu)) + '</span><span class="ss-steps__bar" aria-hidden="true"><i style="width:' + pct.toFixed(1) + '%"></i></span></li>';
     }).join('');
     var rawOpen = !!ctx.opts.rawOpen;
@@ -422,28 +451,37 @@
     /* the failed state is an illustration: never pair the real signature, block or blockhash with "Failed" */
     var ph = '<span class="mono ss-ph">Example…</span>';
     var sig = ok
-      ? '<span class="ss-tech__row">' + addr(ctx, T.signature, 'Transaction signature', { demo: 'sig' }) +
+      ? '<span class="ss-tech__row">' + addr(ctx, T.signature, 'Transaction signature', { demo: 'sig', page: false }) +
           '<button type="button" class="ss-copy" data-act="copy" data-copy="' + esc(T.signature) + '" aria-label="Copy full signature">' + I.copy(15) + '</button></span>'
-      : ph + '<span class="ss-sub">Example state, not a real transaction</span>';
+      : ph;
+    /* every tool from today's page has a place: tabs, tool buttons and the menu all land here */
+    var ext = function (href, text) { return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + text + '</a>'; };
     var links = ok
-      ? '<a href="#" data-act="rawlink">Raw JSON</a><a href="' + link + '" target="_blank" rel="noopener noreferrer">Inspect</a>' +
-        '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Transaction map</a><a href="https://pro-api.solscan.io/pro-api-docs/v2.0" target="_blank" rel="noopener noreferrer">API</a>'
-      : '<a href="https://pro-api.solscan.io/pro-api-docs/v2.0" target="_blank" rel="noopener noreferrer">API</a><span class="ss-tech__off">Raw JSON, Inspect and Transaction map open on a real transaction</span>';
+      ? '<a href="#" data-act="goto" data-to="ledger">Balance changes</a><a href="#" data-act="rawlink">Raw JSON</a>' + ext(link, 'Inspect') +
+        ext('https://pro-api.solscan.io/pro-api-docs/v2.0', 'API') + ext(link, 'Transaction map') + ext(link, 'Explain this transaction') +
+        '<span class="ss-tech__more">' + ext(link, 'Personal label') + ext(link, 'Update name tag') + ext(link, 'Update token info') + ext(link, 'Report address') + '</span>'
+      : ext('https://pro-api.solscan.io/pro-api-docs/v2.0', 'API') + '<span class="ss-tech__off">Raw JSON, Inspect and Transaction map open on a real transaction</span>';
     return '<section class="ss-tech" data-sec="tech"' + ctx.lab(ctx.id + '-tt') + '>' +
       '<button type="button" class="ss-tech__toggle" data-act="tech" aria-expanded="' + expanded + '" aria-controls="' + listId + '" id="' + ctx.id + '-tt">' +
-        '<span>Technical details<small>Signature, block, status, compute</small></span>' + I.chev(18) + '</button>' +
+        '<span>Technical details<small>' + (ok ? 'Signature, block, status, compute' : 'Example, not a real transaction') + '</small></span>' + I.chev(18) + '</button>' +
       '<div id="' + listId + '"' + (expanded ? '' : ' hidden') + '>' +
-      '<dl class="ss-tech__list">' +
+      (ok ? '' : '<dl class="ss-tech__list">' +
+        '<div><dt>Status</dt><dd>Failed, finalized<span class="ss-sub">Error 6001 in instruction 4 (Jupiter): slippage limit exceeded</span></dd></div>' +
+        '<div><dt>Example</dt><dd>Not a real transaction<span class="ss-sub">On a real failed swap, its signature, block, time, signer and compute appear here.</span></dd></div>' +
+      '</dl>') +
+      (!ok ? '' : '<dl class="ss-tech__list">' +
         '<div><dt>Signature</dt><dd>' + sig + '</dd></div>' +
-        '<div><dt>Block</dt><dd>' + (ok ? T.slot : '<span class="ss-ph">Example</span>') + '</dd></div>' +
-        '<div><dt>Time</dt><dd>' + esc(when.time) + '<span class="ss-sub">' + esc(when.date) + ', ' + esc(F.ago(T.blockTime)) + '</span></dd></div>' +
+        '<div><dt>Block</dt><dd><a class="ss-tech__a" href="' + SOLSCAN + '/block/' + T.slot + '" target="_blank" rel="noopener noreferrer">' + T.slot + '</a></dd></div>' +
+        '<div><dt>Time</dt><dd>' + esc(when.time) + '<span class="ss-sub">' + esc(when.date) + ', ' + esc(F.ago(T.blockTime, ctx.opts.now)) + '</span></dd></div>' +
         '<div><dt>Approved by</dt><dd>' + ctx.you('Your wallet', 'This wallet') + '<span class="ss-sub">' + addr(ctx, T.signer, 'Signer') + ', the ' + term(ctx, 'signer', 'signer', 'signer') + ' and fee payer</span></dd></div>' +
-        '<div><dt>Status</dt><dd>' + (ok ? term(ctx, 'finalized', 'Finalized', 'finalized') + '<span class="ss-sub">Confirmed by the whole network</span>' : 'Failed, ' + term(ctx, 'finalized', 'finalized', 'finalized') + '<span class="ss-sub">Error 6001 in instruction 4 (Jupiter)</span>') + '</dd></div>' +
+        /* "Final" is defined once, on the stamp; here the plain line says what it means */
+        '<div><dt>Status</dt><dd>Finalized<span class="ss-sub">Confirmed by the network; can’t be reversed</span></dd></div>' +
         '<div><dt>' + term(ctx, 'cu', 'Compute', null) + '</dt><dd>' + F.group(String(T.cuUsed)) + ' of ' + F.group(String(T.cuLimit)) + ' units' +
-          '<span class="ss-sub">Priority price ' + F.group(String(T.cuPrice)) + ' micro-lamports per unit</span></dd></div>' +
+          '<span class="ss-sub">Priority price ' + F.group(String(T.cuPrice)) + ' micro-lamports per unit</span>' +
+          (ok && T.costUnits ? '<span class="ss-sub">Transaction cost ' + F.group(String(T.costUnits)) + ': a block-space score, not a price</span>' : '') + '</dd></div>' +
         '<div><dt>Version</dt><dd>' + T.version + ', with ' + T.lookups.length + ' ' + term(ctx, 'lookup', 'lookup tables', null) + '<span class="ss-sub">' + lookups + '</span></dd></div>' +
-        '<div><dt>Blockhash</dt><dd>' + (ok ? addr(ctx, T.blockhash, 'Recent blockhash') : ph) + '</dd></div>' +
-      '</dl>' +
+        '<div><dt>Blockhash</dt><dd>' + addr(ctx, T.blockhash, 'Recent blockhash', { page: false }) + '</dd></div>' +
+      '</dl>') +
       '<div class="ss-tech__links">' + links + '</div>' +
       '</div></section>';
   }
@@ -451,7 +489,9 @@
   function ad(ctx) {
     var tag = ctx.opts.embedded ? 'div' : 'aside';
     return '<' + tag + ' class="ss-ad"' + (ctx.opts.embedded ? ' role="group"' : '') + ' aria-label="Sponsored"><div class="ss-ad__label">Sponsored <span>Ads keep Solscan free</span></div>' +
-      '<div class="ss-ad__slot"><span>Ad placement, 320 × 100</span></div></' + tag + '>';
+      '<a class="ss-ad__card" href="#" data-act="noop"><span class="ss-ad__mark">' + I.device(22) + '</span>' +
+        '<span class="ss-ad__t">Hardware wallet</span><span class="ss-ad__p">Keep your keys offline and approve every swap on the device.</span>' +
+        '<span class="ss-ad__cta">Learn more</span></a></' + tag + '>';
   }
 
   function dock(ctx) {
@@ -465,7 +505,8 @@
 
   function page(ctx) {
     if (ctx.opts.only === 'receipt') return receipt(ctx);
-    var techOpen = ctx.opts.techOpen != null ? ctx.opts.techOpen : (ctx.wide || ctx.opts.view === 'detailed');
+    /* a failed example has no real signature or block to show, so its rail starts closed */
+    var techOpen = ctx.opts.techOpen != null ? ctx.opts.techOpen : (ctx.ok() && (ctx.wide || ctx.opts.view === 'detailed'));
     var main = ctx.opts.embedded ? 'div' : 'main';
     return nav(ctx) +
       '<' + main + ' class="ss-main"><div class="ss-wrap">' +
@@ -530,6 +571,7 @@
     opts.view = opts.view || 'simple';
     var ctx = new Ctx(root, opts);
     root.classList.add('ss');
+    root.classList.toggle('ss--failed', opts.status === 'failed');
     root.innerHTML = '';
     ctx.wide = (opts.width || root.clientWidth) >= 1120;
     root.innerHTML = page(ctx);
@@ -552,18 +594,23 @@
           '<div class="ss-pop__k">' + (o.what ? esc(o.what) : 'Exact amount') + '</div>' +
           '<div class="ss-pop__v">' + esc(o.grouped) + ' <span>' + esc(o.sym) + '</span></div>' +
           '<p class="ss-pop__meta"><span class="mono">' + F.group(String(o.raw)) + '</span> ' + unitsName + ', ' + o.decimals + ' decimals</p>' +
-          (usd != null ? '<p class="ss-pop__meta">≈ ' + usdExact(usd) + ' at SOL $' + price.toFixed(2) + ', its price when this swap happened</p>' : '') +
+          (usd != null ? '<p class="ss-pop__meta">≈ ' + usdExact(usd) + ' at SOL $' + price.toFixed(2) + ', fixed for this swap so it doesn’t drift</p>' : '') +
+          (o.mint ? goLink(SOLSCAN + '/token/' + o.mint, esc(o.sym) + ' token page on Solscan') : '') +
           '<div class="ss-pop__foot"><span>Copies as <code>' + esc(o.exact) + '</code></span>' + '[[btn]]</div>' };
       }
       if (o.kind === 'addr') {
         return { copy: o.addr, label: 'Copy', html:
           '<div class="ss-pop__k">' + esc(o.label || 'Address') + '</div>' +
           '<div class="ss-pop__v ss-pop__v--addr">' + esc(o.addr) + '</div>' +
+          (o.page ? goLink(o.page, 'Account page on Solscan') : '') +
+          (o.owner ? goLink(SOLSCAN + '/account/' + o.owner, 'Owner: ' + esc(o.ownerName)) : '') +
           '<div class="ss-pop__foot"><span>Full value, ' + o.addr.length + ' characters</span>[[btn]]</div>' };
       }
       if (o.kind === 'term') {
         var d = TERMS[o.term];
-        return { html: '<div class="ss-pop__k">In plain words</div><div class="ss-pop__title">' + esc(d[0]) + '</div><p class="ss-pop__p">' + esc(d[1]) + '</p>' };
+        var prog = TERM_PAGES[o.term];
+        return { html: '<div class="ss-pop__k">In plain words</div><div class="ss-pop__title">' + esc(d[0]) + '</div><p class="ss-pop__p">' + esc(d[1]) + '</p>' +
+          (prog ? goLink(SOLSCAN + '/account/' + prog.id, esc(prog.label) + ' on Solscan') : '') };
       }
       return null;
     }
